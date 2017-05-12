@@ -1,10 +1,10 @@
 #include "Renderer.h"
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include <sys/Json.h>
 #include <ren/RenderState.h>
 #include <ren/SW/SW.h>
-
-using namespace glm;
 
 namespace UIRendererConstants {
     enum { A_POS,
@@ -12,142 +12,89 @@ namespace UIRendererConstants {
 
     enum { V_UV };
 
+	enum { U_COL };
+
     enum { DIFFUSEMAP_SLOT };
 }
 
 extern "C" {
 	VSHADER ui_program_vs(VS_IN, VS_OUT) {
-        using namespace UIRendererConstants;
+		using namespace glm; using namespace UIRendererConstants;
 
-		V_FVARYING(V_UV)[0] = V_FATTR(A_UV)[0];
-		V_FVARYING(V_UV)[1] = V_FATTR(A_UV)[1];
-		V_FVARYING(V_UV)[2] = V_FATTR(A_UV)[2];
-
-		V_POS_OUT[0] = V_FATTR(A_POS)[0];
-		V_POS_OUT[1] = V_FATTR(A_POS)[1];
-		V_POS_OUT[2] = V_FATTR(A_POS)[2];
-		V_POS_OUT[3] = 1.0f;
+		*(vec2 *)V_FVARYING(V_UV) = make_vec2(V_FATTR(A_UV));
+		*(vec4 *)V_POS_OUT = vec4(make_vec3(V_FATTR(A_POS)), 1);
 	}
 
 	FSHADER ui_program_fs(FS_IN, FS_OUT) {
-        using namespace UIRendererConstants;
+		using namespace glm; using namespace UIRendererConstants;
 
-		SWfloat uv[2];
-		uv[0] = F_FVARYING_IN(V_UV)[0];
-		uv[1] = F_FVARYING_IN(V_UV)[1];
+		vec4 rgba;
+		TEXTURE(DIFFUSEMAP_SLOT, F_FVARYING_IN(V_UV), &rgba[0]);
 
-		SWfloat rgba[4];
-		TEXTURE(DIFFUSEMAP_SLOT, uv, rgba);
-
-		F_COL_OUT[0] = rgba[0];
-		F_COL_OUT[1] = rgba[1];
-		F_COL_OUT[2] = rgba[2];
-		F_COL_OUT[3] = rgba[3];
-
+		*(vec4 *)F_COL_OUT = rgba * vec4(make_vec3(F_UNIFORM(U_COL)), 1);
 	}
 }
 
 ui::Renderer::Renderer(const JsObject &config) {
+	using namespace UIRendererConstants;
+
 	ui_program_ = R::CreateProgramSW(UI_PROGRAM_NAME, (void *)ui_program_vs, (void *)ui_program_fs, 2);
 
-    /*const JsString &js_local_dir = (const JsString &) config.at(LOCAL_DIR_KEY);
-    const JsString &js_gl_defines = (const JsString &) config.at(GL_DEFINES_KEY);
-
-    { // Load main shader
-        std::string vs_file_name = js_local_dir.val + "/" + UI_PROGRAM_NAME + ".vs",
-                fs_file_name = js_local_dir.val + "/" + UI_PROGRAM_NAME + ".fs";
-        sys::AssetFile vs_file(vs_file_name.c_str(), sys::AssetFile::IN),
-                fs_file(fs_file_name.c_str(), sys::AssetFile::IN);
-        size_t vs_file_size = vs_file.size(),
-                fs_file_size = fs_file.size();
-        std::string vs_source,
-                fs_source;
-        vs_source.resize(vs_file_size);
-        fs_source.resize(fs_file_size);
-
-        vs_file.Read((char *)vs_source.data(), vs_file_size);
-        fs_file.Read((char *)fs_source.data(), fs_file_size);
-
-        R::eProgramLoadStatus status;
-        ui_program_ = R::LoadProgramGLSL(UI_PROGRAM_NAME, vs_source.data(), fs_source.data(), &status);
-        assert(status == R::PROG_CREATED_FROM_DATA);
-    }
-
-    glGenBuffers(1, &attribs_buf_id_);
-    glBindBuffer(GL_ARRAY_BUFFER, attribs_buf_id_);
-    glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(GLfloat) + 8 * sizeof(GLfloat), nullptr, GL_DYNAMIC_DRAW);
-
-    glGenBuffers(1, &indices_buf_id_);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_buf_id_);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLubyte), nullptr, GL_DYNAMIC_DRAW);*/
+	R::AttrUnifArg unifs[] = { { "col", U_COL, SW_VEC3 }, {} },
+				   attrs[] = { { "pos", A_POS, SW_VEC3 }, { "uvs", A_UV, SW_VEC2 }, {} };
+	R::RegisterUnifAttrs(ui_program_, unifs, attrs);
 }
 
 ui::Renderer::~Renderer() {
-    /*glDeleteBuffers(1, &attribs_buf_id_);
-    glDeleteBuffers(1, &indices_buf_id_);*/
+    
 }
 
 void ui::Renderer::BeginDraw() {
+	using namespace UIRendererConstants;
+
 	R::Program *p = R::GetProgram(ui_program_);
 
 	R::UseProgram(p->prog_id);
+	const glm::vec3 white = { 1, 1, 1 };
+	swSetUniform(U_COL, SW_VEC3, &white[0]);
 
 	swBindBuffer(SW_ARRAY_BUFFER, 0);
 	swBindBuffer(SW_INDEX_BUFFER, 0);
 
+	swDisable(SW_PERSPECTIVE_CORRECTION);
+	swDisable(SW_FAST_PERSPECTIVE_CORRECTION);
+	swDisable(SW_DEPTH_TEST);
     swEnable(SW_BLEND);
 
-	ivec2 scissor_test[2] = { { 0, 0 }, { R::w, R::h } };
-	this->EmplaceParams(vec3(1, 1, 1), 0.0f, BL_ALPHA, scissor_test);
-
-    /*R::Program *p = R::GetProgram(ui_program_);
-
-    R::UseProgram(p->prog_id);
-
-    glEnableVertexAttribArray((GLuint)p->attribute(0));
-    glEnableVertexAttribArray((GLuint)p->attribute(1));
-
-    glDisable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    glBindBuffer(GL_ARRAY_BUFFER, attribs_buf_id_);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_buf_id_);*/
+	glm::ivec2 scissor_test[2] = { { 0, 0 }, { R::w, R::h } };
+	this->EmplaceParams(glm::vec3(1, 1, 1), 0.0f, BL_ALPHA, scissor_test);
 }
 
 void ui::Renderer::EndDraw() {
-
+	swEnable(SW_FAST_PERSPECTIVE_CORRECTION);
 	swEnable(SW_DEPTH_TEST);
     swDisable(SW_BLEND);
 
 	this->PopParams();
-
-    /*R::PrintGLError();
-
-    glEnable(GL_DEPTH_TEST);
-    glDisable(GL_BLEND);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);*/
 }
 
-void ui::Renderer::DrawImageQuad(const R::Texture2DRef &tex, const vec2 dims[2], const vec2 uvs[2]) {
+void ui::Renderer::DrawImageQuad(const R::Texture2DRef &tex, const glm::vec2 dims[2], const glm::vec2 uvs[2]) {
     using namespace UIRendererConstants;
 
-    float vertices[] = {dims[0].x, dims[0].y, 0,
-						uvs[0].x, uvs[0].y,
+    const float vertices[] = {dims[0].x, dims[0].y, 0,
+							  uvs[0].x, uvs[0].y,
 
-						dims[0].x, dims[0].y + dims[1].y, 0,
-						uvs[0].x, uvs[1].y,
+							  dims[0].x, dims[0].y + dims[1].y, 0,
+							  uvs[0].x, uvs[1].y,
 
-						dims[0].x + dims[1].x, dims[0].y + dims[1].y, 0,
-						uvs[1].x, uvs[1].y,
+							  dims[0].x + dims[1].x, dims[0].y + dims[1].y, 0,
+							  uvs[1].x, uvs[1].y,
 
-						dims[0].x + dims[1].x, dims[0].y, 0,
-						uvs[1].x, uvs[0].y};
+							  dims[0].x + dims[1].x, dims[0].y, 0,
+							  uvs[1].x, uvs[0].y};
 
-    unsigned char indices[] = {2, 1, 0,
-                               3, 2, 0};
+    const unsigned char indices[] = { 2, 1, 0,
+									  3, 2, 0 };
 
     R::BindTexture(DIFFUSEMAP_SLOT, tex.tex_id);
 
@@ -181,6 +128,8 @@ void ui::Renderer::DrawUIElement(const R::Texture2DRef &tex, ePrimitiveType prim
 }
 
 void ui::Renderer::ApplyParams(R::Program *p, const DrawParams &params) {
+	using namespace UIRendererConstants;
 
+	swSetUniform(U_COL, SW_VEC3, &params.col()[0]);
 }
 

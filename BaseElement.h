@@ -6,9 +6,20 @@
 #include <glm/vec2.hpp>
 
 namespace ui {
+	// forward declare everything
+	class BitmapFont;
+	class ButtonBase;
+	class ButtonImage;
+	class ButtonText;
+	class Cursor;
+	class EditBox;
+	class Frame;
+	class Image;
+	class LinearLayout;
     class Renderer;
+	class TypeMesh;
 
-    enum Flags { Visible,
+    enum eFlags { Visible,
                  Resizable };
 
     class BaseElement {

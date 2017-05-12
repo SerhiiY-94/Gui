@@ -7,8 +7,6 @@
 #include "BaseElement.h"
 
 namespace ui {
-    class BitmapFont;
-
     class TypeMesh : public BaseElement {
         std::string text_;
         std::vector<float> pos_, uvs_;

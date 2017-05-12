@@ -22,7 +22,7 @@ ui::Image::Image(const char *tex_name, const glm::vec2 uvs[2],
     std::unique_ptr<char[]> data(new char[in_file_size]);
     in_file.Read(data.get(), in_file_size);
 
-    tex_ = R::LoadTexture2D(tex_name, data.get());
+    tex_ = R::LoadTexture2D(tex_name, data.get(), (int)in_file_size);
 }
 
 void ui::Image::Draw(Renderer *r) {

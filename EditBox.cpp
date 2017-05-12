@@ -1,5 +1,7 @@
 #include "EditBox.h"
 
+#include "Renderer.h"
+
 namespace EditBoxConstants{
     const unsigned long long default_flags =
                     (1 << ui::Integers) |

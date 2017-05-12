@@ -7,8 +7,6 @@
 #include "TypeMesh.h"
 
 namespace ui {
-    class BitmapFont;
-
     class ButtonText : public ButtonBase {
     protected:
         TypeMesh type_mesh_;
@@ -17,6 +15,8 @@ namespace ui {
 	
         bool Check(const glm::vec2 &p) const override;
         bool Check(const glm::ivec2 &p) const override;
+
+		void Move(const glm::vec2 &pos, const BaseElement *parent);
 
         void Draw(Renderer *r) override;
     };

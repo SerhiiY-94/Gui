@@ -19,7 +19,7 @@ ui::Frame::Frame(const char *tex_name, const glm::vec2 &offsets,
     std::unique_ptr<char[]> data(new char[in_file_size]);
     in_file.Read(data.get(), in_file_size);
 
-    tex_ = R::LoadTexture2D(tex_name, data.get());
+    tex_ = R::LoadTexture2D(tex_name, data.get(), (int)in_file_size);
 
     Resize(parent);
 }

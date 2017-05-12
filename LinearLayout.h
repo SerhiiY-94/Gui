@@ -6,8 +6,6 @@
 #include "BaseElement.h"
 
 namespace ui {
-    class Renderer;
-
     class LinearLayout : public BaseElement {
     protected:
         std::vector<BaseElement *>  elements_;

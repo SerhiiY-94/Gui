@@ -105,7 +105,7 @@ void ui::Renderer::BeginDraw() {
 }
 
 void ui::Renderer::EndDraw() {
-    R::PrintGLError();
+    R::CheckError();
 
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);

@@ -8,8 +8,6 @@
 #include "BaseElement.h"
 
 namespace ui {
-    class Renderer;
-    
     class Frame : public BaseElement {
         R::Texture2DRef tex_;
         float frame_offset_, frame_offset_uv_;

@@ -115,13 +115,13 @@ bool ui::BitmapFont::Load(const char *fname) {
     // Tex creation params are dependent on BPP
     switch (render_style_) {
         case BFG_RS_ALPHA:
-            tex_ = R::LoadTexture2D(fname, &img[0], nullptr, img_x, img_y, R::RawLUM8, R::NoFilter, R::ClampToEdge);
+            tex_ = R::LoadTexture2D(fname, &img[0], 0, nullptr, img_x, img_y, R::RawLUM8, R::NoFilter, R::ClampToEdge);
             break;
         case BFG_RS_RGB:
-            tex_ = R::LoadTexture2D(fname, &img[0], nullptr, img_x, img_y, R::RawRGB888, R::NoFilter, R::ClampToEdge);
+            tex_ = R::LoadTexture2D(fname, &img[0], 0, nullptr, img_x, img_y, R::RawRGB888, R::NoFilter, R::ClampToEdge);
             break;
         case BFG_RS_RGBA:
-            tex_ = R::LoadTexture2D(fname, &img[0], nullptr, img_x, img_y, R::RawRGBA8888, R::NoFilter, R::ClampToEdge);
+            tex_ = R::LoadTexture2D(fname, &img[0], 0, nullptr, img_x, img_y, R::RawRGBA8888, R::NoFilter, R::ClampToEdge);
             break;
         default:
             return false;
@@ -155,7 +155,10 @@ float ui::BitmapFont::GetTriangles(const char *text, std::vector<float> &positio
 
     len = (int) _strnlen(text, BFG_MAXSTRING);
 
-    if (!len)return 0.0f;
+	if (!len) {
+		positions.clear();
+		return 0.0f;
+	}
 
     char w1251str[BFG_MAXSTRING];
     strcpy(w1251str, text);
@@ -176,7 +179,7 @@ float ui::BitmapFont::GetTriangles(const char *text, std::vector<float> &positio
         if (char_code < 0) {
             char_code += 256;
         }
-        //LOGI("%i %c", char_code, w1251str[i]);
+
         row = (char_code - base_) / row_pitch_;
         col = (char_code - base_) - row * row_pitch_;
 
@@ -203,12 +206,12 @@ float ui::BitmapFont::GetTriangles(const char *text, std::vector<float> &positio
         positions[i * 12 + 9] = p.x + cur_x_ * m.x;
         positions[i * 12 + 10] = p.y + (cur_y_ + y_offset_ * scale_) * m.y;
 
-        indices[i * 6 + 0] = (unsigned char) (4 * i + 0);
-        indices[i * 6 + 1] = (unsigned char) (4 * i + 1);
-        indices[i * 6 + 2] = (unsigned char) (4 * i + 2);
-        indices[i * 6 + 3] = (unsigned char) (4 * i + 0);
-        indices[i * 6 + 4] = (unsigned char) (4 * i + 2);
-        indices[i * 6 + 5] = (unsigned char) (4 * i + 3);
+        indices[i * 6 + 0] = (unsigned char) (4 * i + 1);
+        indices[i * 6 + 1] = (unsigned char) (4 * i + 2);
+        indices[i * 6 + 2] = (unsigned char) (4 * i + 0);
+		indices[i * 6 + 3] = (unsigned char)(4 * i + 3);
+		indices[i * 6 + 4] = (unsigned char)(4 * i + 0);
+		indices[i * 6 + 5] = (unsigned char)(4 * i + 2);
 
         cur_x_ += int(width_[char_code] * scale_);
     }

@@ -8,8 +8,6 @@
 #include "TypeMesh.h"
 
 namespace ui {
-    class Renderer;
-    
     enum eEditBoxFlags {
         Integers,
         Chars,
