@@ -1,6 +1,7 @@
 #include "test_common.h"
 
-#include <ren/RenderState.h>
+#include <ren/Context.h>
+#include <ren/GL.h>
 #include <sys/Json.h>
 
 #include "../Renderer.h"
@@ -9,7 +10,7 @@
 
 #include <SDL2/SDL.h>
 
-class RendererTest {
+class RendererTest : public ren::Context {
     SDL_Window *window_;
     void *gl_ctx_;
 public:
@@ -19,7 +20,7 @@ public:
         window_ = SDL_CreateWindow("View", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 256, 256, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN);
         gl_ctx_ = SDL_GL_CreateContext(window_);
 
-        R::Init(256, 256);
+        ren::Context::Init(256, 256);
 #ifndef EMSCRIPTEN
         GLenum glew_err = glewInit();
         if (glew_err != GLEW_OK) {
@@ -29,8 +30,6 @@ public:
     }
 
     ~RendererTest() {
-        R::Deinit();
-
         SDL_GL_DeleteContext(gl_ctx_);
         SDL_DestroyWindow(window_);
 #ifndef EMSCRIPTEN
@@ -65,7 +64,7 @@ void test_renderer() {
         {   // Default parameters
             RendererTest _;
 
-            ui::Renderer r(config);
+            ui::Renderer r(config, _);
 
             //const auto &cur = r.GetParams();
 

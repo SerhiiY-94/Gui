@@ -6,11 +6,11 @@
 
 #include "Renderer.h"
 
-ui::Frame::Frame(const R::Texture2DRef &tex, const glm::vec2 &offsets,
+ui::Frame::Frame(const ren::Texture2DRef &tex, const glm::vec2 &offsets,
                  const glm::vec2 &pos, const glm::vec2 &size, const BaseElement *parent)
     : BaseElement(pos, size, parent), tex_(tex), frame_offset_(offsets[0]), frame_offset_uv_(offsets[1]) {}
 
-ui::Frame::Frame(const char *tex_name, const glm::vec2 &offsets,
+ui::Frame::Frame(ren::Context &ctx, const char *tex_name, const glm::vec2 &offsets,
                  const glm::vec2 &pos, const glm::vec2 &size, const BaseElement *parent)
     : BaseElement(pos, size, parent), frame_offset_(offsets[0]), frame_offset_uv_(offsets[1]) {
 
@@ -19,7 +19,12 @@ ui::Frame::Frame(const char *tex_name, const glm::vec2 &offsets,
     std::unique_ptr<char[]> data(new char[in_file_size]);
     in_file.Read(data.get(), in_file_size);
 
-    tex_ = R::LoadTexture2D(tex_name, data.get(), (int)in_file_size);
+    ren::Texture2DParams p;
+    p.filter = ren::Trilinear;
+    p.repeat = ren::Repeat;
+    ren::eTexLoadStatus status;
+    tex_ = ctx.LoadTexture2D(tex_name, data.get(), (int)in_file_size, p, &status);
+    assert(status == ren::TexCreatedFromData);
 
     Resize(parent);
 }

@@ -10,8 +10,8 @@ namespace ui {
         bool		clicked_;
         glm::vec2	offset_;
     public:
-        Cursor(const R::Texture2DRef &tex, const glm::vec2 uvs[2], const glm::vec2 &size, const BaseElement *parent);
-        Cursor(const char *tex_name, const glm::vec2 uvs[2], const glm::vec2 &size, const BaseElement *parent);
+        Cursor(const ren::Texture2DRef &tex, const glm::vec2 uvs[2], const glm::vec2 &size, const BaseElement *parent);
+        Cursor(ren::Context &ctx, const char *tex_name, const glm::vec2 uvs[2], const glm::vec2 &size, const BaseElement *parent);
 
         void set_clicked(bool b) { clicked_ = b; }
         void set_offset(const glm::vec2 &offset) { offset_ = offset; }

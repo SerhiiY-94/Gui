@@ -2,13 +2,13 @@
 
 #include "Renderer.h"
 
-ui::Cursor::Cursor(const R::Texture2DRef &tex, const glm::vec2 uvs[2], const glm::vec2 &size, const BaseElement *parent)
+ui::Cursor::Cursor(const ren::Texture2DRef &tex, const glm::vec2 uvs[2], const glm::vec2 &size, const BaseElement *parent)
 		: BaseElement(glm::vec2(0, 0), size, parent),
           img_(tex, uvs, glm::vec2(-1, -1), glm::vec2(2, 2), this), clicked_(false) { }
 
-ui::Cursor::Cursor(const char *tex_name, const glm::vec2 uvs[2], const glm::vec2 &size, const BaseElement *parent)
+ui::Cursor::Cursor(ren::Context &ctx, const char *tex_name, const glm::vec2 uvs[2], const glm::vec2 &size, const BaseElement *parent)
 		: BaseElement(glm::vec2(0, 0), size, parent),
-          img_(tex_name, uvs, glm::vec2(-1, -1), glm::vec2(2, 2), this), clicked_(false) { }
+          img_(ctx, tex_name, uvs, glm::vec2(-1, -1), glm::vec2(2, 2), this), clicked_(false) { }
 
 void ui::Cursor::SetPos(const glm::vec2 &pos, const BaseElement *parent) {
     using namespace glm;

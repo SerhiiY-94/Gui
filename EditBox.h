@@ -29,7 +29,7 @@ namespace ui {
         void UpdateLayout();
         void UpdateCursor();
     public:
-        EditBox(const char *frame_tex_name, const glm::vec2 &frame_offsets,
+        EditBox(ren::Context &ctx, const char *frame_tex_name, const glm::vec2 &frame_offsets,
                 BitmapFont *font,
                 const glm::vec2 &pos, const glm::vec2 &size, const BaseElement *parent);
         EditBox(const Frame &frame, BitmapFont *font,

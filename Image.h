@@ -8,12 +8,12 @@
 namespace ui {
     class Image : public BaseElement {
 	protected:
-        R::Texture2DRef tex_;
+        ren::Texture2DRef tex_;
         glm::vec2       uvs_[2];
     public:
-        Image(const R::Texture2DRef &tex, const glm::vec2 uvs[2],
+        Image(const ren::Texture2DRef &tex, const glm::vec2 uvs[2],
               const glm::vec2 &pos, const glm::vec2 &size, const BaseElement *parent);
-        Image(const char *tex_name, const glm::vec2 uvs[2],
+        Image(ren::Context &ctx, const char *tex_name, const glm::vec2 uvs[2],
               const glm::vec2 &pos, const glm::vec2 &size, const BaseElement *parent);
 
 		void set_uvs(const glm::vec2 uvs[2]) {

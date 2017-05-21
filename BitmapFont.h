@@ -5,6 +5,7 @@
 
 #include <glm/vec2.hpp>
 
+#include <ren/Context.h>
 #include <ren/Texture.h>
 
 namespace ui {
@@ -13,11 +14,11 @@ namespace ui {
 
     class BitmapFont {
     public:
-        BitmapFont(const char *name = nullptr);
+        BitmapFont(const char *name = nullptr, ren::Context *ctx = nullptr);
 
         float height(const BaseElement *parent) const;
 
-        R::Texture2DRef tex() { return tex_; }
+        ren::Texture2DRef tex() { return tex_; }
 
         int blend_mode() const;
 
@@ -27,7 +28,7 @@ namespace ui {
 
         void set_sharp(bool b);
 
-        bool Load(const char *name);
+        bool Load(const char *name, ren::Context &ctx);
 
         void SetCursor(int x, int y);
 
@@ -44,7 +45,7 @@ namespace ui {
         int cell_x_, cell_y_, y_offset_, row_pitch_;
         char base_;
         char width_[256];
-        R::Texture2DRef tex_;
+        ren::Texture2DRef tex_;
         int cur_x_, cur_y_;
         float row_factor_, col_factor_;
         int render_style_;

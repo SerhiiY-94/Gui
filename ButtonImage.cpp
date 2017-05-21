@@ -1,14 +1,14 @@
 #include "ButtonImage.h"
 
-ui::ButtonImage::ButtonImage(const char *tex_normal, const glm::vec2 uvs_normal[2],
+ui::ButtonImage::ButtonImage(ren::Context &ctx,
+                             const char *tex_normal, const glm::vec2 uvs_normal[2],
                              const char *tex_focused, const glm::vec2 uvs_focused[2],
                              const char *tex_pressed, const glm::vec2 uvs_pressed[2],
                              const glm::vec2 &pos, const glm::vec2 &size, const BaseElement *parent)
         : ButtonBase(pos, size, parent),
-          image_normal_{tex_normal, uvs_normal, {-1, -1}, {2, 2}, this},
-          image_focused_{tex_focused, uvs_focused, {-1, -1}, {2, 2}, this},
-          image_pressed_{tex_pressed, uvs_pressed, {-1, -1}, {2, 2}, this} {
-}
+          image_normal_{ ctx, tex_normal, uvs_normal, {-1, -1}, {2, 2}, this },
+          image_focused_{ ctx, tex_focused, uvs_focused, {-1, -1}, {2, 2}, this },
+          image_pressed_{ ctx, tex_pressed, uvs_pressed, {-1, -1}, {2, 2}, this } {}
 
 void ui::ButtonImage::Resize(const BaseElement *parent) {
     BaseElement::Resize(parent);

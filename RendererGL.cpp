@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-#include <ren/RenderState.h>
+#include <ren/GL.h>
 #include <sys/Json.h>
 
 namespace UIRendererConstants {
@@ -54,18 +54,23 @@ namespace UIRendererConstants {
 		"void main(void) {\n"
 		"	gl_FragColor = vec4(col, 1.0) * texture2D(s_texture, aVertexUVs_);\n"
 		"}";
+
+    inline void BindTexture(int slot, uint32_t tex) {
+        glActiveTexture((GLenum)(GL_TEXTURE0 + slot));
+        glBindTexture(GL_TEXTURE_2D, (GLuint)tex);
+    }
 }
 
-ui::Renderer::Renderer(const JsObject &config) {
+ui::Renderer::Renderer(const JsObject &config, ren::Context &ctx) : ctx_(ctx) {
 	using namespace UIRendererConstants;
 	using namespace glm;
 
     const JsString &js_gl_defines = (const JsString &) config.at(GL_DEFINES_KEY);
 
     {	// Load main shader
-        R::eProgramLoadStatus status;
-        ui_program_ = R::LoadProgramGLSL(UI_PROGRAM_NAME, vs_source, fs_source, &status);
-        assert(status == R::ProgCreatedFromData);
+        ren::eProgLoadStatus status;
+        ui_program_ = ctx_.LoadProgramGLSL(UI_PROGRAM_NAME, vs_source, fs_source, &status);
+        assert(status == ren::ProgCreatedFromData);
     }
 
     glGenBuffers(1, &attribs_buf_id_);
@@ -85,19 +90,18 @@ ui::Renderer::~Renderer() {
 void ui::Renderer::BeginDraw() {
 	using namespace glm;
 
-    R::Program *p = R::GetProgram(ui_program_);
+    int val = ui_program_->prog_id();
+    glUseProgram(ui_program_->prog_id());
 
-    R::UseProgram(p->prog_id);
-
-    glEnableVertexAttribArray((GLuint)p->attribute(0));
-    glEnableVertexAttribArray((GLuint)p->attribute(1));
+    glEnableVertexAttribArray((GLuint)ui_program_->attribute(0).loc);
+    glEnableVertexAttribArray((GLuint)ui_program_->attribute(1).loc);
 
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_SCISSOR_TEST);
 
-	ivec2 scissor_test[2] = { { 0, 0 }, { R::w, R::h } };
+	ivec2 scissor_test[2] = { { 0, 0 }, { ctx_.w(), ctx_.h() } };
 	this->EmplaceParams(vec3(1, 1, 1), 0.0f, BL_ALPHA, scissor_test);
 
     glBindBuffer(GL_ARRAY_BUFFER, attribs_buf_id_);
@@ -105,7 +109,7 @@ void ui::Renderer::BeginDraw() {
 }
 
 void ui::Renderer::EndDraw() {
-    R::CheckError();
+    ren::CheckError();
 
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
@@ -117,7 +121,7 @@ void ui::Renderer::EndDraw() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void ui::Renderer::DrawImageQuad(const R::Texture2DRef &tex, const glm::vec2 dims[2], const glm::vec2 uvs[2]) {
+void ui::Renderer::DrawImageQuad(const ren::Texture2DRef &tex, const glm::vec2 dims[2], const glm::vec2 uvs[2]) {
     using namespace UIRendererConstants;
     
     float vertices[] = {dims[0].x, dims[0].y, 0,
@@ -138,21 +142,19 @@ void ui::Renderer::DrawImageQuad(const R::Texture2DRef &tex, const glm::vec2 dim
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, sizeof(indices), indices);
 
-    R::Program *p = R::GetProgram(ui_program_);
-
     const DrawParams &cur_params = params_.back();
-    this->ApplyParams(p, cur_params);
+    this->ApplyParams(ui_program_, cur_params);
 
-    R::BindTexture(0, tex.tex_id);
-    glUniform1i(p->uniform(U_TEXTURE), 0);
+    BindTexture(0, tex->tex_id());
+    glUniform1i(ui_program_->uniform(U_TEXTURE).loc, 0);
 
-    glVertexAttribPointer((GLuint)p->attribute(0), 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
-    glVertexAttribPointer((GLuint)p->attribute(1), 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
+    glVertexAttribPointer((GLuint)ui_program_->attribute(0).loc, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
+    glVertexAttribPointer((GLuint)ui_program_->attribute(1).loc, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)(3 * sizeof(float)));
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, 0);
 }
 
-void ui::Renderer::DrawUIElement(const R::Texture2DRef &tex, ePrimitiveType prim_type,
+void ui::Renderer::DrawUIElement(const ren::Texture2DRef &tex, ePrimitiveType prim_type,
                                  const std::vector<float> &pos, const std::vector<float> &uvs,
                                  const std::vector<unsigned char> &indices) {
     using namespace UIRendererConstants;
@@ -160,32 +162,31 @@ void ui::Renderer::DrawUIElement(const R::Texture2DRef &tex, ePrimitiveType prim
     assert(pos.size() / 5 < 0xff);
     if (pos.empty()) return;
 
-    R::Program *p = R::GetProgram(ui_program_);
-
     const DrawParams &cur_params = params_.back();
-    this->ApplyParams(p, cur_params);
+    this->ApplyParams(ui_program_, cur_params);
 
-    R::BindTexture(0, tex.tex_id);
-    glUniform1i(p->uniform(U_TEXTURE), 0);
+    BindTexture(0, tex->tex_id());
+    glUniform1i(ui_program_->uniform(U_TEXTURE).loc, 0);
 
     glBufferSubData(GL_ARRAY_BUFFER, 0, pos.size() * sizeof(GLfloat), &pos[0]);
     glBufferSubData(GL_ARRAY_BUFFER, pos.size() * sizeof(GLfloat), uvs.size() * sizeof(GLfloat), &uvs[0]);
 
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indices.size() * sizeof(GLubyte), &indices[0]);
 
-    glVertexAttribPointer((GLuint)p->attribute(0), 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
-    glVertexAttribPointer((GLuint)p->attribute(1), 2, GL_FLOAT, GL_FALSE, 0, (void *)((uintptr_t)pos.size() * sizeof(GLfloat)));
+    glVertexAttribPointer((GLuint)ui_program_->attribute(0).loc, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
+    glVertexAttribPointer((GLuint)ui_program_->attribute(1).loc, 2, GL_FLOAT, GL_FALSE, 0, (void *)((uintptr_t)pos.size() * sizeof(GLfloat)));
 
     if (prim_type == PRIM_TRIANGLE) {
         glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_BYTE, 0);
     }
 }
 
-void ui::Renderer::ApplyParams(R::Program *p, const DrawParams &params) {
+void ui::Renderer::ApplyParams(ren::ProgramRef &p, const DrawParams &params) {
     using namespace UIRendererConstants;
+    int val = p->uniform(U_COL).loc;
+    glUniform3f(p->uniform(U_COL).loc, params.col_[0], params.col_[1], params.col_[2]);
+    glUniform1f(p->uniform(U_Z_OFFSET).loc, params.z_val_);
 
-    glUniform3f(p->uniform(U_COL), params.col_[0], params.col_[1], params.col_[2]);
-    glUniform1f(p->uniform(U_Z_OFFSET), params.z_val_);
     if (params.blend_mode_ == BL_ALPHA) {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     } else if (params.blend_mode_ == BL_COLOR) {

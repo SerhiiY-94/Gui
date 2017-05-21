@@ -11,6 +11,10 @@
 
 struct JsObject;
 
+namespace ren {
+    class Context;
+}
+
 namespace ui {
     const char GL_DEFINES_KEY[]     = "gl_defines";
     const char UI_PROGRAM_NAME[]    = "ui_program";
@@ -20,7 +24,7 @@ namespace ui {
 
     class Renderer {
     public:
-        Renderer(const JsObject &config);
+        Renderer(const JsObject &config, ren::Context &ctx);
         ~Renderer();
 
         void BeginDraw();
@@ -70,21 +74,22 @@ namespace ui {
             params_.pop_back();
         }
 
-        void DrawImageQuad(const R::Texture2DRef &tex,
+        void DrawImageQuad(const ren::Texture2DRef &tex,
                            const glm::vec2 dims[2],
                            const glm::vec2 uvs[2]);
 
-        void DrawUIElement(const R::Texture2DRef &tex, ePrimitiveType prim_type,
+        void DrawUIElement(const ren::Texture2DRef &tex, ePrimitiveType prim_type,
                            const std::vector<float> &pos, const std::vector<float> &uvs,
                            const std::vector<unsigned char> &indices);
     private:
-        R::ProgramRef ui_program_;
+        ren::Context &ctx_;
+        ren::ProgramRef ui_program_;
 #if defined(USE_GL_RENDER)
         uint32_t attribs_buf_id_, indices_buf_id_;
 #endif
         std::vector<DrawParams> params_;
 
-        void ApplyParams(R::Program *p, const DrawParams &params);
+        void ApplyParams(ren::ProgramRef &p, const DrawParams &params);
     };
 }
 

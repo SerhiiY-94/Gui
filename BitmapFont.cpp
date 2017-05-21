@@ -29,23 +29,22 @@ namespace BitmapFontConstants {
 std::vector<float> ui::BitmapFont::std_positions, ui::BitmapFont::std_uvs;
 std::vector<unsigned char> ui::BitmapFont::std_indices;
 
-ui::BitmapFont::BitmapFont(const char *name) {
+ui::BitmapFont::BitmapFont(const char *name, ren::Context *ctx) {
     cur_x_ = cur_y_ = 0;
     r_ = g_ = b_ = 1.0f;
     invert_y_ = false;
     scale_ = 1.0f;
 
-    if (name) {
-        this->Load(name);
+    if (name && ctx) {
+        this->Load(name, *ctx);
     }
 }
 
 void ui::BitmapFont::set_sharp(bool b) {
-    R::Texture2D *t = R::GetTexture(tex_);
-    R::ChangeFilter(*t, b ? R::NoFilter : R::Bilinear, R::ClampToEdge);
+    tex_->ChangeFilter(b ? ren::NoFilter : ren::Bilinear, ren::ClampToEdge);
 }
 
-bool ui::BitmapFont::Load(const char *fname) {
+bool ui::BitmapFont::Load(const char *fname, ren::Context &ctx) {
     using namespace BitmapFontConstants;
 
     std::vector<char> dat, img;
@@ -112,20 +111,28 @@ bool ui::BitmapFont::Load(const char *fname) {
     // Grab image data
     memcpy(&img[0], &dat[MAP_DATA_OFFSET], (size_t) (img_x * img_y) * (bpp / 8));
 
+    ren::Texture2DParams p;
+    p.w = img_x;
+    p.h = img_y;
+    p.filter = ren::NoFilter;
+    p.repeat = ren::ClampToEdge;
+
     // Tex creation params are dependent on BPP
     switch (render_style_) {
         case BFG_RS_ALPHA:
-            tex_ = R::LoadTexture2D(fname, &img[0], 0, nullptr, img_x, img_y, R::RawLUM8, R::NoFilter, R::ClampToEdge);
+            p.format = ren::RawLUM8;
             break;
         case BFG_RS_RGB:
-            tex_ = R::LoadTexture2D(fname, &img[0], 0, nullptr, img_x, img_y, R::RawRGB888, R::NoFilter, R::ClampToEdge);
+            p.format = ren::RawRGB888;
             break;
         case BFG_RS_RGBA:
-            tex_ = R::LoadTexture2D(fname, &img[0], 0, nullptr, img_x, img_y, R::RawRGBA8888, R::NoFilter, R::ClampToEdge);
+            p.format = ren::RawRGBA8888;
             break;
         default:
             return false;
     }
+
+    tex_ = ctx.LoadTexture2D(fname, &img[0], 0, p, nullptr);
 
     return true;
 }

@@ -14,10 +14,10 @@ namespace EditBoxConstants{
     const int cursor_offset = 12;
 }
 
-ui::EditBox::EditBox(const char *frame_tex_name, const glm::vec2 &frame_offsets,
+ui::EditBox::EditBox(ren::Context &ctx, const char *frame_tex_name, const glm::vec2 &frame_offsets,
                      BitmapFont *font,
                      const glm::vec2 &pos, const glm::vec2 &size, const BaseElement *parent)
-    : EditBox({frame_tex_name, frame_offsets, {-1, -1}, {2, 2}, this}, font, pos, size, parent) {}
+    : EditBox({ ctx, frame_tex_name, frame_offsets, { -1, -1 }, { 2, 2 }, this }, font, pos, size, parent) {}
 
 ui::EditBox::EditBox(const Frame &frame, BitmapFont *font,
                      const glm::vec2 &pos, const glm::vec2 &size, const BaseElement *parent)
