@@ -14,18 +14,20 @@ ui::Frame::Frame(ren::Context &ctx, const char *tex_name, const glm::vec2 &offse
                  const glm::vec2 &pos, const glm::vec2 &size, const BaseElement *parent)
     : BaseElement(pos, size, parent), frame_offset_(offsets[0]), frame_offset_uv_(offsets[1]) {
 
-    sys::AssetFile in_file(tex_name, sys::AssetFile::IN);
-    size_t in_file_size = in_file.size();
-    std::unique_ptr<char[]> data(new char[in_file_size]);
-    in_file.Read(data.get(), in_file_size);
-
-    ren::Texture2DParams p;
-    p.filter = ren::Trilinear;
-    p.repeat = ren::Repeat;
     ren::eTexLoadStatus status;
-    tex_ = ctx.LoadTexture2D(tex_name, data.get(), (int)in_file_size, p, &status);
-    assert(status == ren::TexCreatedFromData);
+    tex_ = ctx.LoadTexture2D(tex_name, nullptr, 0, {}, &status);
+    if (status == ren::TexCreatedDefault) {
+        sys::AssetFile in_file(tex_name, sys::AssetFile::IN);
+        size_t in_file_size = in_file.size();
+        std::unique_ptr<char[]> data(new char[in_file_size]);
+        in_file.Read(data.get(), in_file_size);
 
+        ren::Texture2DParams p;
+        p.filter = ren::Trilinear;
+        p.repeat = ren::Repeat;
+        tex_ = ctx.LoadTexture2D(tex_name, data.get(), (int)in_file_size, p, &status);
+        assert(status == ren::TexCreatedFromData);
+    }
     Resize(parent);
 }
 

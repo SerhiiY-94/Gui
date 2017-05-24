@@ -20,7 +20,7 @@ namespace ui {
         Frame(ren::Context &ctx, const char *tex_name, const glm::vec2 &offsets,
               const glm::vec2 &pos, const glm::vec2 &size, const BaseElement *parent);
 
-        const ren::Texture2DRef &tex() const { return tex_; }
+        ren::Texture2DRef &tex() { return tex_; }
 
         void Resize(const BaseElement *parent) override;
         

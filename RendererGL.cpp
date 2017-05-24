@@ -109,8 +109,6 @@ void ui::Renderer::BeginDraw() {
 }
 
 void ui::Renderer::EndDraw() {
-    ren::CheckError();
-
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
 	glDisable(GL_SCISSOR_TEST);

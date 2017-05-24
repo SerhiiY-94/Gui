@@ -35,7 +35,7 @@ namespace ui {
         EditBox(const Frame &frame, BitmapFont *font,
                 const glm::vec2 &pos, const glm::vec2 &size, const BaseElement *parent);
 
-        const Frame &frame() const { return frame_; }
+        Frame &frame() { return frame_; }
 
         const std::string &line_text(unsigned line) const { return lines_[line].text(); }
 
