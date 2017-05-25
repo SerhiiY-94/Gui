@@ -1,5 +1,4 @@
-#ifndef UI_RENDERER_H
-#define UI_RENDERER_H
+#pragma once
 
 #include <vector>
 
@@ -93,4 +92,3 @@ namespace ui {
     };
 }
 
-#endif // UI_RENDERER_H

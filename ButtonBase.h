@@ -1,5 +1,4 @@
-#ifndef BUTTONBASE_H
-#define BUTTONBASE_H
+#pragma once
 
 #include <sys/Signal_.h>
 
@@ -23,4 +22,3 @@ namespace ui {
     };
 }
 
-#endif // BUTTONBASE_H

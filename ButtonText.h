@@ -1,5 +1,4 @@
-#ifndef BUTTONTEXT_H
-#define BUTTONTEXT_H
+#pragma once
 
 #include <string>
 
@@ -22,4 +21,3 @@ namespace ui {
     };
 }
 
-#endif // BUTTONTEXT_H

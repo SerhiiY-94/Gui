@@ -1,5 +1,4 @@
-#ifndef BASE_ELEMENT_H
-#define BASE_ELEMENT_H
+#pragma once
 
 #include <bitset>
 
@@ -84,5 +83,3 @@ namespace ui {
         }
     };
 }
-
-#endif // BASE_ELEMENT_H

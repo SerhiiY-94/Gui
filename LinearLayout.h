@@ -1,5 +1,4 @@
-#ifndef LINEARLAYOUT_H
-#define LINEARLAYOUT_H
+#pragma once
 
 #include <vector>
 
@@ -58,5 +57,3 @@ namespace ui {
         void Draw(Renderer *r) override;
     };
 }
-
-#endif // LINEARLAYOUT_H

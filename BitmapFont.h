@@ -1,5 +1,4 @@
-#ifndef BITMAPFONT_H
-#define BITMAPFONT_H
+#pragma once
 
 #include <vector>
 
@@ -57,5 +56,3 @@ namespace ui {
         static std::vector<unsigned char> std_indices;
     };
 }
-
-#endif // BITMAPFONT_H

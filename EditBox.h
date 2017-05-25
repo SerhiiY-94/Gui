@@ -1,5 +1,4 @@
-#ifndef EDITBOX_H
-#define EDITBOX_H
+#pragma once
 
 #include <bitset>
 
@@ -62,5 +61,3 @@ namespace ui {
         bool MoveCursorV(int m);
     };
 }
-
-#endif // EDITBOX_H

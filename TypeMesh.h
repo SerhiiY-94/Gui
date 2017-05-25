@@ -1,5 +1,4 @@
-#ifndef TYPEMESH_H
-#define TYPEMESH_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -33,4 +32,3 @@ namespace ui {
     };
 }
 
-#endif // TYPEMESH_H

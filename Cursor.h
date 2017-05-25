@@ -1,5 +1,4 @@
-#ifndef CURSOR_H
-#define CURSOR_H
+#pragma once
 
 #include "Image.h"
 
@@ -22,4 +21,3 @@ namespace ui {
     };
 }
 
-#endif // CURSOR_H

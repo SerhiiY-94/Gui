@@ -1,5 +1,4 @@
-#ifndef FRAME_H
-#define FRAME_H
+#pragma once
 
 #include <vector>
 
@@ -27,5 +26,3 @@ namespace ui {
         void Draw(Renderer *r) override;
     };
 }
-
-#endif // FRAME_H

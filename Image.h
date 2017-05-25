@@ -1,5 +1,4 @@
-#ifndef IMAGE_H
-#define IMAGE_H
+#pragma once
 
 #include <ren/Texture.h>
 
@@ -25,4 +24,3 @@ namespace ui {
     };
 }
 
-#endif // IMAGE_H

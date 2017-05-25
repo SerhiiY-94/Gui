@@ -1,5 +1,4 @@
-#ifndef BUTTONIMAGE_H
-#define BUTTONIMAGE_H
+#pragma once
 
 #include <memory>
 
@@ -29,4 +28,3 @@ namespace ui {
     };
 }
 
-#endif // BUTTONIMAGE_H
