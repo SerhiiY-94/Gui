@@ -41,13 +41,13 @@ public:
 
 #include <ren/SW/SW.h>
 
-class RendererTest {
+class RendererTest : public ren::Context {
 	SWcontext *ctx;
 public:
 	RendererTest() {
 		ctx = swCreateContext(1, 1);
 		swMakeCurrent(ctx);
-		R::Init(256, 256);
+		ren::Context::Init(256, 256);
 	}
 
 	~RendererTest() {
@@ -64,7 +64,7 @@ void test_renderer() {
         {   // Default parameters
             RendererTest _;
 
-            ui::Renderer r(config, _);
+            ui::Renderer r(_, config);
 
             //const auto &cur = r.GetParams();
 

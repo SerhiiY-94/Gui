@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include <ren/Context.h>
 #include <sys/AssetFile.h>
 
 #include "Renderer.h"

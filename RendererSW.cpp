@@ -3,7 +3,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <sys/Json.h>
-#include <ren/RenderState.h>
+#include <ren/Context.h>
 #include <ren/SW/SW.h>
 
 namespace UIRendererConstants {
@@ -15,6 +15,11 @@ namespace UIRendererConstants {
 	enum { U_COL };
 
     enum { DIFFUSEMAP_SLOT };
+
+    inline void BindTexture(int slot, uint32_t tex) {
+        swActiveTexture((SWenum)(SW_TEXTURE0 + slot));
+        swBindTexture((SWint)tex);
+    }
 }
 
 extern "C" {
@@ -35,14 +40,13 @@ extern "C" {
 	}
 }
 
-ui::Renderer::Renderer(const JsObject &config) {
+ui::Renderer::Renderer(ren::Context &ctx, const JsObject &config) : ctx_(ctx) {
 	using namespace UIRendererConstants;
 
-	ui_program_ = R::CreateProgramSW(UI_PROGRAM_NAME, (void *)ui_program_vs, (void *)ui_program_fs, 2);
-
-	R::AttrUnifArg unifs[] = { { "col", U_COL, SW_VEC3 }, {} },
-				   attrs[] = { { "pos", A_POS, SW_VEC3 }, { "uvs", A_UV, SW_VEC2 }, {} };
-	R::RegisterUnifAttrs(ui_program_, unifs, attrs);
+	ren::Attribute attrs[] = { { "pos", A_POS, SW_VEC3, 1 }, { "uvs", A_UV, SW_VEC2, 1 }, {} };
+	ren::Uniform unifs[] = { { "col", U_COL, SW_VEC3, 1 }, {} };
+	ui_program_ = ctx.LoadProgramSW(UI_PROGRAM_NAME, (void *)ui_program_vs, (void *)ui_program_fs, 2,
+                                    attrs, unifs, nullptr);
 }
 
 ui::Renderer::~Renderer() {
@@ -52,9 +56,9 @@ ui::Renderer::~Renderer() {
 void ui::Renderer::BeginDraw() {
 	using namespace UIRendererConstants;
 
-	R::Program *p = R::GetProgram(ui_program_);
+	ren::Program *p = ui_program_.get();
 
-	R::UseProgram(p->prog_id);
+	swUseProgram(p->prog_id());
 	const glm::vec3 white = { 1, 1, 1 };
 	swSetUniform(U_COL, SW_VEC3, &white[0]);
 
@@ -66,7 +70,7 @@ void ui::Renderer::BeginDraw() {
 	swDisable(SW_DEPTH_TEST);
     swEnable(SW_BLEND);
 
-	glm::ivec2 scissor_test[2] = { { 0, 0 }, { R::w, R::h } };
+	glm::ivec2 scissor_test[2] = { { 0, 0 }, { ctx_.w(), ctx_.h() } };
 	this->EmplaceParams(glm::vec3(1, 1, 1), 0.0f, BL_ALPHA, scissor_test);
 }
 
@@ -78,7 +82,7 @@ void ui::Renderer::EndDraw() {
 	this->PopParams();
 }
 
-void ui::Renderer::DrawImageQuad(const R::Texture2DRef &tex, const glm::vec2 dims[2], const glm::vec2 uvs[2]) {
+void ui::Renderer::DrawImageQuad(const ren::Texture2DRef &tex, const glm::vec2 dims[2], const glm::vec2 uvs[2]) {
     using namespace UIRendererConstants;
 
     const float vertices[] = {dims[0].x, dims[0].y, 0,
@@ -96,14 +100,14 @@ void ui::Renderer::DrawImageQuad(const R::Texture2DRef &tex, const glm::vec2 dim
     const unsigned char indices[] = { 2, 1, 0,
 									  3, 2, 0 };
 
-    R::BindTexture(DIFFUSEMAP_SLOT, tex.tex_id);
+    BindTexture(DIFFUSEMAP_SLOT, tex->tex_id());
 
 	swVertexAttribPointer(A_POS, sizeof(float) * 3, sizeof(float) * 5, &vertices[0]);
 	swVertexAttribPointer(A_UV, sizeof(float) * 2, sizeof(float) * 5, &vertices[3]);
 	swDrawElements(SW_TRIANGLES, 6, SW_UNSIGNED_BYTE, indices);
 }
 
-void ui::Renderer::DrawUIElement(const R::Texture2DRef &tex, ePrimitiveType prim_type,
+void ui::Renderer::DrawUIElement(const ren::Texture2DRef &tex, ePrimitiveType prim_type,
 								 const std::vector<float> &pos, const std::vector<float> &uvs,
 								 const std::vector<unsigned char> &indices) {
     using namespace UIRendererConstants;
@@ -112,12 +116,10 @@ void ui::Renderer::DrawUIElement(const R::Texture2DRef &tex, ePrimitiveType prim
 
     assert(pos.size() / 5 < 0xff);
 
-    R::Program *p = R::GetProgram(ui_program_);
-
     const DrawParams &cur_params = params_.back();
-    this->ApplyParams(p, cur_params);
+    this->ApplyParams(ui_program_, cur_params);
 
-    R::BindTexture(DIFFUSEMAP_SLOT, tex.tex_id);
+    BindTexture(DIFFUSEMAP_SLOT, tex->tex_id());
 
     swVertexAttribPointer(A_POS, sizeof(float) * 3, 0, (void *)&pos[0]);
     swVertexAttribPointer(A_UV, sizeof(float) * 2, 0, (void *)&uvs[0]);
@@ -127,7 +129,7 @@ void ui::Renderer::DrawUIElement(const R::Texture2DRef &tex, ePrimitiveType prim
     }
 }
 
-void ui::Renderer::ApplyParams(R::Program *p, const DrawParams &params) {
+void ui::Renderer::ApplyParams(ren::ProgramRef &p, const DrawParams &params) {
 	using namespace UIRendererConstants;
 
 	swSetUniform(U_COL, SW_VEC3, &params.col()[0]);

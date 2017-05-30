@@ -23,7 +23,7 @@ namespace ui {
 
     class Renderer {
     public:
-        Renderer(const JsObject &config, ren::Context &ctx);
+        Renderer(ren::Context &ctx, const JsObject &config);
         ~Renderer();
 
         void BeginDraw();

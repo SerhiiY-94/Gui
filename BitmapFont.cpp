@@ -41,7 +41,9 @@ ui::BitmapFont::BitmapFont(const char *name, ren::Context *ctx) {
 }
 
 void ui::BitmapFont::set_sharp(bool b) {
+#if !defined(USE_SW_RENDER)
     tex_->ChangeFilter(b ? ren::NoFilter : ren::Bilinear, ren::ClampToEdge);
+#endif
 }
 
 bool ui::BitmapFont::Load(const char *fname, ren::Context &ctx) {
@@ -116,11 +118,14 @@ bool ui::BitmapFont::Load(const char *fname, ren::Context &ctx) {
     p.h = img_y;
     p.filter = ren::NoFilter;
     p.repeat = ren::ClampToEdge;
-
     // Tex creation params are dependent on BPP
     switch (render_style_) {
         case BFG_RS_ALPHA:
+#if !defined(USE_SW_RENDER)
             p.format = ren::RawLUM8;
+#else
+            assert(false);
+#endif
             break;
         case BFG_RS_RGB:
             p.format = ren::RawRGB888;

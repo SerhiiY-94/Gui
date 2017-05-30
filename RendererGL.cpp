@@ -61,7 +61,7 @@ namespace UIRendererConstants {
     }
 }
 
-ui::Renderer::Renderer(const JsObject &config, ren::Context &ctx) : ctx_(ctx) {
+ui::Renderer::Renderer(ren::Context &ctx, const JsObject &config) : ctx_(ctx) {
 	using namespace UIRendererConstants;
 	using namespace glm;
 
