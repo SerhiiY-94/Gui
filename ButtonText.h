@@ -10,12 +10,12 @@ namespace ui {
     protected:
         TypeMesh type_mesh_;
     public:
-        ButtonText(const std::string &text, BitmapFont *font, const glm::vec2 &pos, const BaseElement *parent);
+        ButtonText(const std::string &text, BitmapFont *font, const math::vec2 &pos, const BaseElement *parent);
 	
-        bool Check(const glm::vec2 &p) const override;
-        bool Check(const glm::ivec2 &p) const override;
+        bool Check(const math::vec2 &p) const override;
+        bool Check(const math::ivec2 &p) const override;
 
-		void Move(const glm::vec2 &pos, const BaseElement *parent);
+		void Move(const math::vec2 &pos, const BaseElement *parent);
 
         void Draw(Renderer *r) override;
     };

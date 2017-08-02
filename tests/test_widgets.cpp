@@ -3,7 +3,7 @@
 #include "../BaseElement.h"
 
 void test_widgets() {
-    using namespace glm;
+    using namespace math;
 
     {   // BaseElement tests
         {   // Simple element

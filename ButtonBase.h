@@ -10,13 +10,13 @@ namespace ui {
         enum eState { ST_NORMAL, ST_FOCUSED, ST_PRESSED };
         eState state_;
     public:
-        ButtonBase(const glm::vec2 &pos, const glm::vec2 &size, const BaseElement *parent);
+        ButtonBase(const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent);
 
-        void Focus(const glm::ivec2 &p) override;
-        void Focus(const glm::vec2 &p) override;
+        void Focus(const math::ivec2 &p) override;
+        void Focus(const math::vec2 &p) override;
 
-        void Press(const glm::ivec2 &p, bool push) override;
-        void Press(const glm::vec2 &p, bool push) override;
+        void Press(const math::ivec2 &p, bool push) override;
+        void Press(const math::vec2 &p, bool push) override;
 
         sys::Signal<void()> pressed_signal;
     };

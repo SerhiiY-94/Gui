@@ -1,8 +1,8 @@
 #pragma once
 
-#include <glm/vec2.hpp>
+#include <math/vec2.hpp>
 
 namespace ui {
-    glm::vec2 MapPointToScreen(const glm::ivec2 &p, const glm::ivec2 &res);
+    math::vec2 MapPointToScreen(const math::ivec2 &p, const math::ivec2 &res);
 }
 

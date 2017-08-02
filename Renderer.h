@@ -2,8 +2,7 @@
 
 #include <vector>
 
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
+#include <math/vec2.hpp>
 
 #include <ren/Program.h>
 #include <ren/Texture.h>
@@ -30,16 +29,16 @@ namespace ui {
         void EndDraw();
 
         struct DrawParams {
-			DrawParams(const glm::vec3 &col, float z_val, eBlendMode blend_mode, const glm::ivec2 scissor_test[2]) : col_(col), z_val_(z_val), blend_mode_(blend_mode) {
+			DrawParams(const math::vec3 &col, float z_val, eBlendMode blend_mode, const math::ivec2 scissor_test[2]) : col_(col), z_val_(z_val), blend_mode_(blend_mode) {
 				scissor_test_[0] = scissor_test[0];
 				scissor_test_[1] = scissor_test[1];
 			}
 
-            const glm::vec3 &col() const { return col_; }
+            const math::vec3 &col() const { return col_; }
 			float z_val() const { return z_val_; }
 			eBlendMode blend_mode() const { return blend_mode_; }
-			const glm::ivec2 *scissor_test() const { return scissor_test_; }
-			const glm::ivec2 &scissor_test(int i) const { return scissor_test_[i]; }
+			const math::ivec2 *scissor_test() const { return scissor_test_; }
+			const math::ivec2 &scissor_test(int i) const { return scissor_test_[i]; }
 
             bool operator==(const DrawParams &rhs) const { 
 				return col_ == rhs.col_ && 
@@ -50,10 +49,10 @@ namespace ui {
             bool operator!=(const DrawParams &rhs) const { return !(*this == rhs); }
         private:
             friend class Renderer;
-            glm::vec3   col_;
+            math::vec3   col_;
             float		z_val_;
             eBlendMode  blend_mode_;
-			glm::ivec2	scissor_test_[2];
+            math::ivec2	scissor_test_[2];
         };
 
         const DrawParams &GetParams() const {
@@ -74,8 +73,8 @@ namespace ui {
         }
 
         void DrawImageQuad(const ren::Texture2DRef &tex,
-                           const glm::vec2 dims[2],
-                           const glm::vec2 uvs[2]);
+                           const math::vec2 dims[2],
+                           const math::vec2 uvs[2]);
 
         void DrawUIElement(const ren::Texture2DRef &tex, ePrimitiveType prim_type,
                            const std::vector<float> &pos, const std::vector<float> &uvs,

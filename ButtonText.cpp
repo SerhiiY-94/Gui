@@ -3,24 +3,24 @@
 #include "BitmapFont.h"
 #include "Renderer.h"
 
-ui::ButtonText::ButtonText(const std::string &text, BitmapFont *font, const glm::vec2 &pos, const BaseElement *parent)
+ui::ButtonText::ButtonText(const std::string &text, BitmapFont *font, const math::vec2 &pos, const BaseElement *parent)
         : ButtonBase(pos, {0, 0}, parent),
           type_mesh_(text, font, pos, parent) {}
 
-bool ui::ButtonText::Check(const glm::vec2 &p) const {
+bool ui::ButtonText::Check(const math::vec2 &p) const {
 	return type_mesh_.Check(p);
 }
 
-bool ui::ButtonText::Check(const glm::ivec2 &p) const {
+bool ui::ButtonText::Check(const math::ivec2 &p) const {
 	return type_mesh_.Check(p);
 }
 
-void ui::ButtonText::Move(const glm::vec2 &pos, const BaseElement *parent) {
+void ui::ButtonText::Move(const math::vec2 &pos, const BaseElement *parent) {
 	type_mesh_.Move(pos, parent);
 }
 
 void ui::ButtonText::Draw(Renderer *r) {
-    using namespace glm;
+    using namespace math;
 
 	const auto &cur = r->GetParams();
 

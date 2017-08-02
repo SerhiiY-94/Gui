@@ -14,16 +14,16 @@ namespace EditBoxConstants{
     const int cursor_offset = 12;
 }
 
-ui::EditBox::EditBox(ren::Context &ctx, const char *frame_tex_name, const glm::vec2 &frame_offsets,
+ui::EditBox::EditBox(ren::Context &ctx, const char *frame_tex_name, const math::vec2 &frame_offsets,
                      BitmapFont *font,
-                     const glm::vec2 &pos, const glm::vec2 &size, const BaseElement *parent)
+                     const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent)
     : EditBox({ ctx, frame_tex_name, frame_offsets, { -1, -1 }, { 2, 2 }, this }, font, pos, size, parent) {}
 
 ui::EditBox::EditBox(const Frame &frame, BitmapFont *font,
-                     const glm::vec2 &pos, const glm::vec2 &size, const BaseElement *parent)
+                     const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent)
     : BaseElement(pos, size, parent),
       cursor_("|", font, {0, 0}, this),
-	  lay_({ -1 + 2.0f * EditBoxConstants::padding / parent->size_px().x, -1 }, { 2, 2 }, this),
+	  lay_({ -1 + 2.0f * EditBoxConstants::padding / parent->size_px().x(), -1 }, { 2, 2 }, this),
       frame_(frame), font_(font), edit_flags_(EditBoxConstants::default_flags), focused_(false),
       current_line_(0), current_char_(0) {
 	lay_.set_vetical(true);
@@ -32,13 +32,13 @@ ui::EditBox::EditBox(const Frame &frame, BitmapFont *font,
 
 void ui::EditBox::Resize(const BaseElement *parent) {
 	BaseElement::Resize(parent);
-	lay_.Resize({ -1 + 2.0f * EditBoxConstants::padding / parent->size_px().x, -1 }, { 2, 2 }, this);
+	lay_.Resize({ -1 + 2.0f * EditBoxConstants::padding / parent->size_px().x(), -1 }, { 2, 2 }, this);
 	frame_.Resize(this);
 
     UpdateCursor();
 }
 
-void ui::EditBox::Press(const glm::vec2 &p, bool push) {
+void ui::EditBox::Press(const math::vec2 &p, bool push) {
     if (!push) return;
 
     if (Check(p)) {
@@ -48,13 +48,13 @@ void ui::EditBox::Press(const glm::vec2 &p, bool push) {
                 current_line_ = std::distance(lines_.begin(), it);
                 const auto &pos = it->positions();
                 for (unsigned i = 0; i < pos.size(); i += 4 * 3) {
-                    if ((i == 0 && p.x > pos[i]) || (i > 0 && p.x > 0.5f * (pos[i] + pos[i - 3]))) {
+                    if ((i == 0 && p.x() > pos[i]) || (i > 0 && p.x() > 0.5f * (pos[i] + pos[i - 3]))) {
                         current_char_ = i / 12;
                     }
                 }
                 UpdateCursor();
                 break;
-            } else if (p.y >= it->pos().y && p.y <= it->pos().y + it->size().y) {
+            } else if (p.y() >= it->pos().y() && p.y() <= it->pos().y() + it->size().y()) {
                 current_line_ = std::distance(lines_.begin(), it);
                 current_char_ = lines_[current_line_].text().length();
                 UpdateCursor();
@@ -73,7 +73,7 @@ void ui::EditBox::Draw(Renderer *r) {
     frame_.Draw(r);
     lay_.Draw(r);
 
-    r->EmplaceParams(glm::vec3(0.75f, 0.75f, 0.75f), cur.z_val(), cur.blend_mode(), dims_px_);
+    r->EmplaceParams(math::vec3(0.75f, 0.75f, 0.75f), cur.z_val(), cur.blend_mode(), dims_px_);
     if (focused_) {
         cursor_.Draw(r);
     }
@@ -85,7 +85,7 @@ void ui::EditBox::Draw(Renderer *r) {
 int ui::EditBox::AddLine(const std::string &text) {
     if (!edit_flags_[Multiline] && !lines_.empty()) return -1;
 
-    lines_.emplace_back(text, font_, glm::vec2{0, 0}, this);
+    lines_.emplace_back(text, font_, math::vec2{0, 0}, this);
 
     // pointers could be invalidated after reallocation, so...
     UpdateLayout();
@@ -96,7 +96,7 @@ int ui::EditBox::AddLine(const std::string &text) {
 int ui::EditBox::InsertLine(const std::string &text) {
     if (!edit_flags_[Multiline]) return -1;
 
-    lines_.insert(lines_.begin() + current_line_, { text, font_, glm::vec2{ 0, 0 }, this });
+    lines_.insert(lines_.begin() + current_line_, { text, font_, math::vec2{ 0, 0 }, this });
 
     UpdateLayout();
 
@@ -122,15 +122,15 @@ void ui::EditBox::UpdateCursor() {
     if (current_line_ >= (int)lines_.size()) return;
     const auto &cur_line = lines_[current_line_];
 
-    glm::vec2 cur_pos = { 0, cur_line.pos().y };
+    math::vec2 cur_pos = { 0, cur_line.pos().y() };
     if (current_char_ < (int)line_text(current_line_).length()) {
-        cur_pos.x = cur_line.positions()[current_char_ * 12];
+        cur_pos[0] = cur_line.positions()[current_char_ * 12];
     } else {
-        cur_pos.x = cur_line.pos().x + cur_line.size().x;
+        cur_pos[0] = cur_line.pos().x() + cur_line.size().x();
     }
 
-    cur_pos = 2.0f * (cur_pos - pos()) / size() - glm::vec2(1, 1);
-    cur_pos.x -= float(cursor_offset) / size_px().x;
+    cur_pos = 2.0f * (cur_pos - pos()) / size() - math::vec2(1, 1);
+    cur_pos[0] -= float(cursor_offset) / size_px().x();
 
     cursor_.Move(cur_pos, this);
 }
@@ -163,7 +163,7 @@ void ui::EditBox::AddChar(int c) {
     std::string text = lines_[current_line_].text();
     text.insert(text.begin() + current_char_, c);
 
-    lines_[current_line_] = TypeMesh(text, font_, glm::vec2{ 0, 0 }, this);
+    lines_[current_line_] = TypeMesh(text, font_, { 0.0f, 0.0f }, this);
     current_char_++;
 
     UpdateLayout();
@@ -179,7 +179,7 @@ void ui::EditBox::DeleteChar() {
     if (ch < 0 || ch >= (int)text.length()) return;
     text.erase(text.begin() + ch);
 
-    lines_[current_line_] = TypeMesh(text, font_, glm::vec2{ 0, 0 }, this);
+    lines_[current_line_] = TypeMesh(text, font_, { 0.0f, 0.0f }, this);
     current_char_--;
 
     UpdateLayout();

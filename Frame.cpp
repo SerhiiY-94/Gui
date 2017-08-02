@@ -7,12 +7,12 @@
 
 #include "Renderer.h"
 
-ui::Frame::Frame(const ren::Texture2DRef &tex, const glm::vec2 &offsets,
-                 const glm::vec2 &pos, const glm::vec2 &size, const BaseElement *parent)
+ui::Frame::Frame(const ren::Texture2DRef &tex, const math::vec2 &offsets,
+                 const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent)
     : BaseElement(pos, size, parent), tex_(tex), frame_offset_(offsets[0]), frame_offset_uv_(offsets[1]) {}
 
-ui::Frame::Frame(ren::Context &ctx, const char *tex_name, const glm::vec2 &offsets,
-                 const glm::vec2 &pos, const glm::vec2 &size, const BaseElement *parent)
+ui::Frame::Frame(ren::Context &ctx, const char *tex_name, const math::vec2 &offsets,
+                 const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent)
     : BaseElement(pos, size, parent), frame_offset_(offsets[0]), frame_offset_uv_(offsets[1]) {
 
     ren::eTexLoadStatus status;
@@ -35,32 +35,32 @@ ui::Frame::Frame(ren::Context &ctx, const char *tex_name, const glm::vec2 &offse
 void ui::Frame::Resize(const ui::BaseElement *parent) {
     BaseElement::Resize(parent);
     
-    const glm::vec2 off = 1.0f * glm::vec2{frame_offset_} * dims_[1] / (glm::vec2)dims_px_[1];
-    const glm::vec2 min = dims_[0], max = dims_[0] + dims_[1];
+    const math::vec2 off = 1.0f * math::vec2{frame_offset_} * dims_[1] / (math::vec2)dims_px_[1];
+    const math::vec2 min = dims_[0], max = dims_[0] + dims_[1];
 
-    positions_ = {min.x, min.y, 0,
-                  min.x + off.x, min.y, 0,
-                  min.x + off.x, min.y + off.y, 0,
-                  min.x, min.y + off.y, 0,
+    positions_ = {min.x(), min.y(), 0,
+                  min.x() + off.x(), min.y(), 0,
+                  min.x() + off.x(), min.y() + off.y(), 0,
+                  min.x(), min.y() + off.y(), 0,
 
-                  min.x + off.x, max.y - off.y, 0,
-                  min.x, max.y - off.y, 0,
+                  min.x() + off.x(), max.y() - off.y(), 0,
+                  min.x(), max.y() - off.y(), 0,
 
-                  max.x - off.x, min.y + off.y, 0,
-                  max.x - off.x, max.y - off.y, 0,
+                  max.x() - off.x(), min.y() + off.y(), 0,
+                  max.x() - off.x(), max.y() - off.y(), 0,
 
-                  max.x - off.x, min.y, 0,
+                  max.x() - off.x(), min.y(), 0,
 
-                  max.x, min.y, 0,
-                  max.x, min.y + off.y, 0,
+                  max.x(), min.y(), 0,
+                  max.x(), min.y() + off.y(), 0,
 
-                  max.x, max.y - off.y, 0,
+                  max.x(), max.y() - off.y(), 0,
 
-                  max.x, max.y, 0,
-                  max.x - off.x, max.y, 0,
+                  max.x(), max.y(), 0,
+                  max.x() - off.x(), max.y(), 0,
 
-                  min.x + off.x, max.y, 0,
-                  min.x, max.y, 0,
+                  min.x() + off.x(), max.y(), 0,
+                  min.x(), max.y(), 0,
     };
     
     uvs_ = {0, 0,

@@ -63,7 +63,6 @@ namespace UIRendererConstants {
 
 ui::Renderer::Renderer(ren::Context &ctx, const JsObject &config) : ctx_(ctx) {
 	using namespace UIRendererConstants;
-	using namespace glm;
 
     const JsString &js_gl_defines = (const JsString &) config.at(GL_DEFINES_KEY);
 
@@ -88,7 +87,7 @@ ui::Renderer::~Renderer() {
 }
 
 void ui::Renderer::BeginDraw() {
-	using namespace glm;
+	using namespace math;
 
     int val = ui_program_->prog_id();
     glUseProgram(ui_program_->prog_id());
@@ -119,20 +118,20 @@ void ui::Renderer::EndDraw() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void ui::Renderer::DrawImageQuad(const ren::Texture2DRef &tex, const glm::vec2 dims[2], const glm::vec2 uvs[2]) {
+void ui::Renderer::DrawImageQuad(const ren::Texture2DRef &tex, const math::vec2 dims[2], const math::vec2 uvs[2]) {
     using namespace UIRendererConstants;
     
-    float vertices[] = {dims[0].x, dims[0].y, 0,
-                        uvs[0].x, uvs[0].y,
+    float vertices[] = {dims[0].x(), dims[0].y(), 0,
+                        uvs[0].x(), uvs[0].y(),
 
-                        dims[0].x, dims[0].y + dims[1].y, 0,
-                        uvs[0].x, uvs[1].y,
+                        dims[0].x(), dims[0].y() + dims[1].y(), 0,
+                        uvs[0].x(), uvs[1].y(),
 
-                        dims[0].x + dims[1].x, dims[0].y + dims[1].y, 0,
-                        uvs[1].x, uvs[1].y,
+                        dims[0].x() + dims[1].x(), dims[0].y() + dims[1].y(), 0,
+                        uvs[1].x(), uvs[1].y(),
 
-                        dims[0].x + dims[1].x, dims[0].y, 0,
-                        uvs[1].x, uvs[0].y};
+                        dims[0].x() + dims[1].x(), dims[0].y(), 0,
+                        uvs[1].x(), uvs[0].y()};
 
     unsigned char indices[] = {2, 1, 0,
                                3, 2, 0};
@@ -191,8 +190,8 @@ void ui::Renderer::ApplyParams(ren::ProgramRef &p, const DrawParams &params) {
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
     }
 
-	if (params.scissor_test_[1].x > 0 && params.scissor_test_[1].y > 0) {
-		glScissor(params.scissor_test_[0].x, params.scissor_test_[0].y,
-				  params.scissor_test_[1].x, params.scissor_test_[1].y);
+	if (params.scissor_test_[1].x() > 0 && params.scissor_test_[1].y() > 0) {
+		glScissor(params.scissor_test_[0].x(), params.scissor_test_[0].y(),
+				  params.scissor_test_[1].x(), params.scissor_test_[1].y());
 	}
 }

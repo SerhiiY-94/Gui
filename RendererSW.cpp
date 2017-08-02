@@ -1,7 +1,5 @@
 #include "Renderer.h"
 
-#include <glm/gtc/type_ptr.hpp>
-
 #include <sys/Json.h>
 #include <ren/Context.h>
 #include <ren/SW/SW.h>
@@ -24,19 +22,19 @@ namespace UIRendererConstants {
 
 extern "C" {
 	VSHADER ui_program_vs(VS_IN, VS_OUT) {
-		using namespace glm; using namespace UIRendererConstants;
+		using namespace math; using namespace UIRendererConstants;
 
 		*(vec2 *)V_FVARYING(V_UV) = make_vec2(V_FATTR(A_UV));
 		*(vec4 *)V_POS_OUT = vec4(make_vec3(V_FATTR(A_POS)), 1);
 	}
 
 	FSHADER ui_program_fs(FS_IN, FS_OUT) {
-		using namespace glm; using namespace UIRendererConstants;
+		using namespace math; using namespace UIRendererConstants;
 
-		vec4 rgba;
-		TEXTURE(DIFFUSEMAP_SLOT, F_FVARYING_IN(V_UV), &rgba[0]);
+		float rgba[4];
+		TEXTURE(DIFFUSEMAP_SLOT, F_FVARYING_IN(V_UV), rgba);
 
-		*(vec4 *)F_COL_OUT = rgba * vec4(make_vec3(F_UNIFORM(U_COL)), 1);
+		*(vec4 *)F_COL_OUT = make_vec4(rgba) * vec4(make_vec3(F_UNIFORM(U_COL)), 1);
 	}
 }
 
@@ -59,8 +57,8 @@ void ui::Renderer::BeginDraw() {
 	ren::Program *p = ui_program_.get();
 
 	swUseProgram(p->prog_id());
-	const glm::vec3 white = { 1, 1, 1 };
-	swSetUniform(U_COL, SW_VEC3, &white[0]);
+	const math::vec3 white = { 1, 1, 1 };
+	swSetUniform(U_COL, SW_VEC3, math::value_ptr(white));
 
 	swBindBuffer(SW_ARRAY_BUFFER, 0);
 	swBindBuffer(SW_INDEX_BUFFER, 0);
@@ -70,8 +68,8 @@ void ui::Renderer::BeginDraw() {
 	swDisable(SW_DEPTH_TEST);
     swEnable(SW_BLEND);
 
-	glm::ivec2 scissor_test[2] = { { 0, 0 }, { ctx_.w(), ctx_.h() } };
-	this->EmplaceParams(glm::vec3(1, 1, 1), 0.0f, BL_ALPHA, scissor_test);
+    math::ivec2 scissor_test[2] = { { 0, 0 }, { ctx_.w(), ctx_.h() } };
+	this->EmplaceParams(math::vec3(1, 1, 1), 0.0f, BL_ALPHA, scissor_test);
 }
 
 void ui::Renderer::EndDraw() {
@@ -82,20 +80,20 @@ void ui::Renderer::EndDraw() {
 	this->PopParams();
 }
 
-void ui::Renderer::DrawImageQuad(const ren::Texture2DRef &tex, const glm::vec2 dims[2], const glm::vec2 uvs[2]) {
+void ui::Renderer::DrawImageQuad(const ren::Texture2DRef &tex, const math::vec2 dims[2], const math::vec2 uvs[2]) {
     using namespace UIRendererConstants;
 
-    const float vertices[] = {dims[0].x, dims[0].y, 0,
-							  uvs[0].x, uvs[0].y,
+    const float vertices[] = {dims[0].x(), dims[0].y(), 0,
+							  uvs[0].x(), uvs[0].y(),
 
-							  dims[0].x, dims[0].y + dims[1].y, 0,
-							  uvs[0].x, uvs[1].y,
+							  dims[0].x(), dims[0].y() + dims[1].y(), 0,
+							  uvs[0].x(), uvs[1].y(),
 
-							  dims[0].x + dims[1].x, dims[0].y + dims[1].y, 0,
-							  uvs[1].x, uvs[1].y,
+							  dims[0].x() + dims[1].x(), dims[0].y() + dims[1].y(), 0,
+							  uvs[1].x(), uvs[1].y(),
 
-							  dims[0].x + dims[1].x, dims[0].y, 0,
-							  uvs[1].x, uvs[0].y};
+							  dims[0].x() + dims[1].x(), dims[0].y(), 0,
+							  uvs[1].x(), uvs[0].y()};
 
     const unsigned char indices[] = { 2, 1, 0,
 									  3, 2, 0 };
@@ -132,6 +130,6 @@ void ui::Renderer::DrawUIElement(const ren::Texture2DRef &tex, ePrimitiveType pr
 void ui::Renderer::ApplyParams(ren::ProgramRef &p, const DrawParams &params) {
 	using namespace UIRendererConstants;
 
-	swSetUniform(U_COL, SW_VEC3, &params.col()[0]);
+	swSetUniform(U_COL, SW_VEC3, math::value_ptr(params.col()));
 }
 

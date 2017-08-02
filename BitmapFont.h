@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include <glm/vec2.hpp>
+#include <math/vec2.hpp>
 
 #include <ren/Context.h>
 #include <ren/Texture.h>
@@ -34,11 +34,11 @@ namespace ui {
         void ReverseYAxis(bool state);
 
         float GetTriangles(const char *text, std::vector<float> &positions, std::vector<float> &uvs,
-                           std::vector<unsigned char> &indices, const glm::vec2 &pos, const BaseElement *parent);
+                           std::vector<unsigned char> &indices, const math::vec2 &pos, const BaseElement *parent);
 
         float GetWidth(const char *text, const BaseElement *parent);
 
-        void DrawText(Renderer *r, const char *text, const glm::vec2 &pos, const BaseElement *parent);
+        void DrawText(Renderer *r, const char *text, const math::vec2 &pos, const BaseElement *parent);
 
     private:
         int cell_x_, cell_y_, y_offset_, row_pitch_;
