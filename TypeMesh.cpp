@@ -3,31 +3,31 @@
 #include "BitmapFont.h"
 #include "Renderer.h"
 
-ui::TypeMesh::TypeMesh(const std::string &text, BitmapFont *font, const glm::vec2 &pos, const BaseElement *parent)
+ui::TypeMesh::TypeMesh(const std::string &text, BitmapFont *font, const math::vec2 &pos, const BaseElement *parent)
         : BaseElement(pos, {0, 0}, parent),
           text_(text), font_(font) {
     Move(pos, parent);
 }
 
 void ui::TypeMesh::Centrate() {
-    using namespace glm;
+    using namespace math;
 
     vec2 delta = dims_[0] - center_;
 
     center_ += delta;
     dims_[0] += delta;
 
-    ivec2 delta_px = delta * ((vec2)dims_px_[1] / dims_[1]);
+    ivec2 delta_px = ivec2(delta * ((vec2)dims_px_[1] / dims_[1]));
     dims_px_[0] += delta_px;
 
     for (auto point = pos_.begin(); point != pos_.end(); point += 3) {
-        point[0] += delta.x;
-        point[1] += delta.y;
+        point[0] += delta.x();
+        point[1] += delta.y();
     }
 }
 
-void ui::TypeMesh::Move(const glm::vec2 &pos, const BaseElement *parent) {
-    using namespace glm;
+void ui::TypeMesh::Move(const math::vec2 &pos, const BaseElement *parent) {
+    using namespace math;
 
     float w = font_->GetTriangles(text_.c_str(), pos_, uvs_, indices_, pos, parent);
     vec2 size = { w, font_->height(parent) };
@@ -51,10 +51,6 @@ void ui::TypeMesh::Move(const glm::vec2 &pos, const BaseElement *parent) {
 void ui::TypeMesh::Resize(const BaseElement *parent) {
     this->Move(rel_dims_[0], parent);
 }
-
-/*void ui::TypeMesh::Resize(const glm::vec2 &pos, const glm::vec2 &size, const BaseElement *parent) {
-    this->Move(pos, parent);
-}*/
 
 void ui::TypeMesh::Draw(Renderer *r) {
     const auto &cur = r->GetParams();

@@ -1,6 +1,6 @@
 #include "Utils.h"
 
-glm::vec2 ui::MapPointToScreen(const glm::ivec2 &p, const glm::ivec2 &res) {
-    return (2.0f * glm::vec2(p.x, res.y - p.y)) / (glm::vec2)res + glm::vec2(-1, -1);
+math::vec2 ui::MapPointToScreen(const math::ivec2 &p, const math::ivec2 &res) {
+    return (2.0f * math::vec2((float)p.x(), (float)res.y() - p.y())) / (math::vec2)res + math::vec2(-1, -1);
 }
 

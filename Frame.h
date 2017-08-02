@@ -14,10 +14,10 @@ namespace ui {
         std::vector<float> positions_, uvs_;
         std::vector<unsigned char> indices_;
     public:
-        Frame(const ren::Texture2DRef &tex, const glm::vec2 &offsets,
-              const glm::vec2 &pos, const glm::vec2 &size, const BaseElement *parent);
-        Frame(ren::Context &ctx, const char *tex_name, const glm::vec2 &offsets,
-              const glm::vec2 &pos, const glm::vec2 &size, const BaseElement *parent);
+        Frame(const ren::Texture2DRef &tex, const math::vec2 &offsets,
+              const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent);
+        Frame(ren::Context &ctx, const char *tex_name, const math::vec2 &offsets,
+              const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent);
 
         ren::Texture2DRef &tex() { return tex_; }
 

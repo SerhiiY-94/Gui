@@ -6,14 +6,14 @@
 
 #include "Renderer.h"
 
-ui::Image::Image(const ren::Texture2DRef &tex, const glm::vec2 uvs[2],
-                 const glm::vec2 &pos, const glm::vec2 &size, const BaseElement *parent) :
+ui::Image::Image(const ren::Texture2DRef &tex, const math::vec2 uvs[2],
+                 const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent) :
         BaseElement(pos, size, parent), tex_(tex) {
     uvs_[0] = uvs[0]; uvs_[1] = uvs[1];
 }
 
-ui::Image::Image(ren::Context &ctx, const char *tex_name, const glm::vec2 uvs[2],
-                 const glm::vec2 &pos, const glm::vec2 &size, const BaseElement *parent) :
+ui::Image::Image(ren::Context &ctx, const char *tex_name, const math::vec2 uvs[2],
+                 const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent) :
         BaseElement(pos, size, parent) {
     uvs_[0] = uvs[0]; uvs_[1] = uvs[1];
 

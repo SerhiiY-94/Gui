@@ -157,9 +157,9 @@ void ui::BitmapFont::ReverseYAxis(bool state) {
 }
 
 float ui::BitmapFont::GetTriangles(const char *text, std::vector<float> &positions, std::vector<float> &uvs,
-                                   std::vector<unsigned char> &indices, const glm::vec2 &pos, const BaseElement *parent) {
+                                   std::vector<unsigned char> &indices, const math::vec2 &pos, const BaseElement *parent) {
     using namespace BitmapFontConstants;
-    using namespace glm;
+    using namespace math;
 
     int len;
     int row, col;
@@ -209,14 +209,14 @@ float ui::BitmapFont::GetTriangles(const char *text, std::vector<float> &positio
         uvs[i * 8 + 6] = u;
         uvs[i * 8 + 7] = v;
 
-        positions[i * 12 + 0] = p.x + cur_x_ * m.x;
-        positions[i * 12 + 1] = p.y + cur_y_ * m.y;
-        positions[i * 12 + 3] = p.x + (cur_x_ + cell_x_ * scale_) * m.x;
-        positions[i * 12 + 4] = p.y + cur_y_ * m.y;
-        positions[i * 12 + 6] = p.x + (cur_x_ + cell_x_ * scale_) * m.x;
-        positions[i * 12 + 7] = p.y + (cur_y_ + y_offset_ * scale_) * m.y;
-        positions[i * 12 + 9] = p.x + cur_x_ * m.x;
-        positions[i * 12 + 10] = p.y + (cur_y_ + y_offset_ * scale_) * m.y;
+        positions[i * 12 + 0] = p.x() + cur_x_ * m.x();
+        positions[i * 12 + 1] = p.y() + cur_y_ * m.y();
+        positions[i * 12 + 3] = p.x() + (cur_x_ + cell_x_ * scale_) * m.x();
+        positions[i * 12 + 4] = p.y() + cur_y_ * m.y();
+        positions[i * 12 + 6] = p.x() + (cur_x_ + cell_x_ * scale_) * m.x();
+        positions[i * 12 + 7] = p.y() + (cur_y_ + y_offset_ * scale_) * m.y();
+        positions[i * 12 + 9] = p.x() + cur_x_ * m.x();
+        positions[i * 12 + 10] = p.y() + (cur_y_ + y_offset_ * scale_) * m.y();
 
         indices[i * 6 + 0] = (unsigned char) (4 * i + 1);
         indices[i * 6 + 1] = (unsigned char) (4 * i + 2);
@@ -227,7 +227,7 @@ float ui::BitmapFont::GetTriangles(const char *text, std::vector<float> &positio
 
         cur_x_ += int(width_[char_code] * scale_);
     }
-    return cur_x_ * m.x;
+    return cur_x_ * m.x();
 
 }
 
@@ -236,14 +236,14 @@ float ui::BitmapFont::GetWidth(const char *text, const BaseElement *parent) {
 }
 
 float ui::BitmapFont::height(const BaseElement *parent) const {
-    return y_offset_ * scale_ * parent->size().y / parent->size_px().y;
+    return y_offset_ * scale_ * parent->size().y() / parent->size_px().y();
 }
 
 int ui::BitmapFont::blend_mode() const {
     return (render_style_ == BitmapFontConstants::BFG_RS_ALPHA) ? ui::BL_COLOR : ui::BL_ALPHA;
 }
 
-void ui::BitmapFont::DrawText(Renderer *r, const char *text, const glm::vec2 &pos, const BaseElement *parent) {
+void ui::BitmapFont::DrawText(Renderer *r, const char *text, const math::vec2 &pos, const BaseElement *parent) {
     GetTriangles(text, std_positions, std_uvs, std_indices, pos, parent);
     if (std_positions.empty()) {
         return;
@@ -251,7 +251,7 @@ void ui::BitmapFont::DrawText(Renderer *r, const char *text, const glm::vec2 &po
 
 	const auto &cur = r->GetParams();
 
-    r->EmplaceParams(glm::vec3(1, 1, 1), cur.z_val(), (eBlendMode)blend_mode(), cur.scissor_test());
+    r->EmplaceParams(math::vec3(1, 1, 1), cur.z_val(), (eBlendMode)blend_mode(), cur.scissor_test());
     r->DrawUIElement(tex_, ui::PRIM_TRIANGLE, std_positions, std_uvs, std_indices);
     r->PopParams();
 }
