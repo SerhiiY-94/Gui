@@ -24,8 +24,15 @@ extern "C" {
 	VSHADER ui_program_vs(VS_IN, VS_OUT) {
 		using namespace math; using namespace UIRendererConstants;
 
-		*(vec2 *)V_FVARYING(V_UV) = make_vec2(V_FATTR(A_UV));
-		*(vec4 *)V_POS_OUT = vec4(make_vec3(V_FATTR(A_POS)), 1);
+		vec2 uv = make_vec2(V_FATTR(A_UV));
+		V_FVARYING(V_UV)[0] = uv[0];
+		V_FVARYING(V_UV)[1] = uv[1];
+
+		vec3 pos = make_vec3(V_FATTR(A_POS));
+		V_POS_OUT[0] = pos[0];
+		V_POS_OUT[1] = pos[1];
+		V_POS_OUT[2] = pos[2];
+		V_POS_OUT[3] = 1;
 	}
 
 	FSHADER ui_program_fs(FS_IN, FS_OUT) {
@@ -34,7 +41,11 @@ extern "C" {
 		float rgba[4];
 		TEXTURE(DIFFUSEMAP_SLOT, F_FVARYING_IN(V_UV), rgba);
 
-		*(vec4 *)F_COL_OUT = make_vec4(rgba) * vec4(make_vec3(F_UNIFORM(U_COL)), 1);
+		vec4 col = make_vec4(rgba) * vec4(make_vec3(F_UNIFORM(U_COL)), 1);
+		F_COL_OUT[0] = col[0];
+		F_COL_OUT[1] = col[1];
+		F_COL_OUT[2] = col[2];
+		F_COL_OUT[3] = col[3];
 	}
 }
 
