@@ -4,6 +4,8 @@ project(ui)
 IF(WIN32)
 
 ELSE(WIN32)
+    set(CMAKE_CXX_STANDARD 11)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
     set(LIBS -pthread)
 ENDIF(WIN32)
 
