@@ -209,14 +209,14 @@ float ui::BitmapFont::GetTriangles(const char *text, std::vector<float> &positio
         uvs[i * 8 + 6] = u;
         uvs[i * 8 + 7] = v;
 
-        positions[i * 12 + 0] = p.x() + cur_x_ * m.x();
-        positions[i * 12 + 1] = p.y() + cur_y_ * m.y();
-        positions[i * 12 + 3] = p.x() + (cur_x_ + cell_x_ * scale_) * m.x();
-        positions[i * 12 + 4] = p.y() + cur_y_ * m.y();
-        positions[i * 12 + 6] = p.x() + (cur_x_ + cell_x_ * scale_) * m.x();
-        positions[i * 12 + 7] = p.y() + (cur_y_ + y_offset_ * scale_) * m.y();
-        positions[i * 12 + 9] = p.x() + cur_x_ * m.x();
-        positions[i * 12 + 10] = p.y() + (cur_y_ + y_offset_ * scale_) * m.y();
+        positions[i * 12 + 0] = p.x + cur_x_ * m.x;
+        positions[i * 12 + 1] = p.y + cur_y_ * m.y;
+        positions[i * 12 + 3] = p.x + (cur_x_ + cell_x_ * scale_) * m.x;
+        positions[i * 12 + 4] = p.y + cur_y_ * m.y;
+        positions[i * 12 + 6] = p.x + (cur_x_ + cell_x_ * scale_) * m.x;
+        positions[i * 12 + 7] = p.y + (cur_y_ + y_offset_ * scale_) * m.y;
+        positions[i * 12 + 9] = p.x + cur_x_ * m.x;
+        positions[i * 12 + 10] = p.y + (cur_y_ + y_offset_ * scale_) * m.y;
 
         indices[i * 6 + 0] = (unsigned char) (4 * i + 1);
         indices[i * 6 + 1] = (unsigned char) (4 * i + 2);
@@ -227,7 +227,7 @@ float ui::BitmapFont::GetTriangles(const char *text, std::vector<float> &positio
 
         cur_x_ += int(width_[char_code] * scale_);
     }
-    return cur_x_ * m.x();
+    return cur_x_ * m.x;
 
 }
 
@@ -236,7 +236,7 @@ float ui::BitmapFont::GetWidth(const char *text, const BaseElement *parent) {
 }
 
 float ui::BitmapFont::height(const BaseElement *parent) const {
-    return y_offset_ * scale_ * parent->size().y() / parent->size_px().y();
+    return y_offset_ * scale_ * parent->size().y / parent->size_px().y;
 }
 
 int ui::BitmapFont::blend_mode() const {

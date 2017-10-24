@@ -21,8 +21,8 @@ void ui::TypeMesh::Centrate() {
     dims_px_[0] += delta_px;
 
     for (auto point = pos_.begin(); point != pos_.end(); point += 3) {
-        point[0] += delta.x();
-        point[1] += delta.y();
+        point[0] += delta.x;
+        point[1] += delta.y;
     }
 }
 

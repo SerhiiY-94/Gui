@@ -36,15 +36,15 @@ void ui::BaseElement::Resize(const math::vec2 &pos, const math::vec2 &size, cons
 }
 
 bool ui::BaseElement::Check(const math::ivec2 &p) const {
-	return (p.x() >= dims_px_[0].x() && 
-			p.y() >= dims_px_[0].y() &&
-			p.x() <= dims_px_[0].x() + dims_px_[1].x() &&
-			p.y() <= dims_px_[0].y() + dims_px_[1].y());
+	return (p.x >= dims_px_[0].x && 
+			p.y >= dims_px_[0].y &&
+			p.x <= dims_px_[0].x + dims_px_[1].x &&
+			p.y <= dims_px_[0].y + dims_px_[1].y);
 }
 
 bool ui::BaseElement::Check(const math::vec2 &p) const {
-	return (p.x() >= dims_[0].x() && 
-			p.y() >= dims_[0].y() &&
-			p.x() <= dims_[0].x() + dims_[1].x() &&
-			p.y() <= dims_[0].y() + dims_[1].y());
+	return (p.x >= dims_[0].x && 
+			p.y >= dims_[0].y &&
+			p.x <= dims_[0].x + dims_[1].x &&
+			p.y <= dims_[0].y + dims_[1].y);
 }

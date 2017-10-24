@@ -94,17 +94,17 @@ void ui::Renderer::EndDraw() {
 void ui::Renderer::DrawImageQuad(const ren::Texture2DRef &tex, const math::vec2 dims[2], const math::vec2 uvs[2]) {
     using namespace UIRendererConstants;
 
-    const float vertices[] = {dims[0].x(), dims[0].y(), 0,
-							  uvs[0].x(), uvs[0].y(),
+    const float vertices[] = {dims[0].x, dims[0].y, 0,
+							  uvs[0].x, uvs[0].y,
 
-							  dims[0].x(), dims[0].y() + dims[1].y(), 0,
-							  uvs[0].x(), uvs[1].y(),
+							  dims[0].x, dims[0].y + dims[1].y, 0,
+							  uvs[0].x, uvs[1].y,
 
-							  dims[0].x() + dims[1].x(), dims[0].y() + dims[1].y(), 0,
-							  uvs[1].x(), uvs[1].y(),
+							  dims[0].x + dims[1].x, dims[0].y + dims[1].y, 0,
+							  uvs[1].x, uvs[1].y,
 
-							  dims[0].x() + dims[1].x(), dims[0].y(), 0,
-							  uvs[1].x(), uvs[0].y()};
+							  dims[0].x + dims[1].x, dims[0].y, 0,
+							  uvs[1].x, uvs[0].y};
 
     const unsigned char indices[] = { 2, 1, 0,
 									  3, 2, 0 };

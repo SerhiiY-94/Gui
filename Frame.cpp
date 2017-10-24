@@ -38,29 +38,29 @@ void ui::Frame::Resize(const ui::BaseElement *parent) {
     const math::vec2 off = 1.0f * math::vec2{frame_offset_} * dims_[1] / (math::vec2)dims_px_[1];
     const math::vec2 min = dims_[0], max = dims_[0] + dims_[1];
 
-    positions_ = {min.x(), min.y(), 0,
-                  min.x() + off.x(), min.y(), 0,
-                  min.x() + off.x(), min.y() + off.y(), 0,
-                  min.x(), min.y() + off.y(), 0,
+    positions_ = {min.x, min.y, 0,
+                  min.x + off.x, min.y, 0,
+                  min.x + off.x, min.y + off.y, 0,
+                  min.x, min.y + off.y, 0,
 
-                  min.x() + off.x(), max.y() - off.y(), 0,
-                  min.x(), max.y() - off.y(), 0,
+                  min.x + off.x, max.y - off.y, 0,
+                  min.x, max.y - off.y, 0,
 
-                  max.x() - off.x(), min.y() + off.y(), 0,
-                  max.x() - off.x(), max.y() - off.y(), 0,
+                  max.x - off.x, min.y + off.y, 0,
+                  max.x - off.x, max.y - off.y, 0,
 
-                  max.x() - off.x(), min.y(), 0,
+                  max.x - off.x, min.y, 0,
 
-                  max.x(), min.y(), 0,
-                  max.x(), min.y() + off.y(), 0,
+                  max.x, min.y, 0,
+                  max.x, min.y + off.y, 0,
 
-                  max.x(), max.y() - off.y(), 0,
+                  max.x, max.y - off.y, 0,
 
-                  max.x(), max.y(), 0,
-                  max.x() - off.x(), max.y(), 0,
+                  max.x, max.y, 0,
+                  max.x - off.x, max.y, 0,
 
-                  min.x() + off.x(), max.y(), 0,
-                  min.x(), max.y(), 0,
+                  min.x + off.x, max.y, 0,
+                  min.x, max.y, 0,
     };
     
     uvs_ = {0, 0,

@@ -23,7 +23,7 @@ ui::EditBox::EditBox(const Frame &frame, BitmapFont *font,
                      const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent)
     : BaseElement(pos, size, parent),
       cursor_("|", font, {0, 0}, this),
-	  lay_({ -1 + 2.0f * EditBoxConstants::padding / parent->size_px().x(), -1 }, { 2, 2 }, this),
+	  lay_({ -1 + 2.0f * EditBoxConstants::padding / parent->size_px().x, -1 }, { 2, 2 }, this),
       frame_(frame), font_(font), edit_flags_(EditBoxConstants::default_flags), focused_(false),
       current_line_(0), current_char_(0) {
 	lay_.set_vetical(true);
@@ -32,7 +32,7 @@ ui::EditBox::EditBox(const Frame &frame, BitmapFont *font,
 
 void ui::EditBox::Resize(const BaseElement *parent) {
 	BaseElement::Resize(parent);
-	lay_.Resize({ -1 + 2.0f * EditBoxConstants::padding / parent->size_px().x(), -1 }, { 2, 2 }, this);
+	lay_.Resize({ -1 + 2.0f * EditBoxConstants::padding / parent->size_px().x, -1 }, { 2, 2 }, this);
 	frame_.Resize(this);
 
     UpdateCursor();
@@ -48,13 +48,13 @@ void ui::EditBox::Press(const math::vec2 &p, bool push) {
                 current_line_ = std::distance(lines_.begin(), it);
                 const auto &pos = it->positions();
                 for (unsigned i = 0; i < pos.size(); i += 4 * 3) {
-                    if ((i == 0 && p.x() > pos[i]) || (i > 0 && p.x() > 0.5f * (pos[i] + pos[i - 3]))) {
+                    if ((i == 0 && p.x > pos[i]) || (i > 0 && p.x > 0.5f * (pos[i] + pos[i - 3]))) {
                         current_char_ = i / 12;
                     }
                 }
                 UpdateCursor();
                 break;
-            } else if (p.y() >= it->pos().y() && p.y() <= it->pos().y() + it->size().y()) {
+            } else if (p.y >= it->pos().y && p.y <= it->pos().y + it->size().y) {
                 current_line_ = std::distance(lines_.begin(), it);
                 current_char_ = lines_[current_line_].text().length();
                 UpdateCursor();
@@ -122,15 +122,15 @@ void ui::EditBox::UpdateCursor() {
     if (current_line_ >= (int)lines_.size()) return;
     const auto &cur_line = lines_[current_line_];
 
-    math::vec2 cur_pos = { 0, cur_line.pos().y() };
+    math::vec2 cur_pos = { 0, cur_line.pos().y };
     if (current_char_ < (int)line_text(current_line_).length()) {
         cur_pos[0] = cur_line.positions()[current_char_ * 12];
     } else {
-        cur_pos[0] = cur_line.pos().x() + cur_line.size().x();
+        cur_pos[0] = cur_line.pos().x + cur_line.size().x;
     }
 
     cur_pos = 2.0f * (cur_pos - pos()) / size() - math::vec2(1, 1);
-    cur_pos[0] -= float(cursor_offset) / size_px().x();
+    cur_pos[0] -= float(cursor_offset) / size_px().x;
 
     cursor_.Move(cur_pos, this);
 }
