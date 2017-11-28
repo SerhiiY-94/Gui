@@ -14,7 +14,7 @@
 #include "Utils.cpp"
 
 #if defined(USE_GL_RENDER)
-    #include "RendererGL.cpp"
+#include "RendererGL.cpp"
 #elif defined(USE_SW_RENDER)
-    #include "RendererSW.cpp"
+#include "RendererSW.cpp"
 #endif

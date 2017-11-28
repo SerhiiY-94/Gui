@@ -1,7 +1,8 @@
 #include "ButtonBase.h"
 
 ui::ButtonBase::ButtonBase(const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent)
-    : BaseElement(pos, size, parent), state_(ST_NORMAL) { }
+    : BaseElement(pos, size, parent), state_(ST_NORMAL) {
+}
 
 void ui::ButtonBase::Focus(const math::ivec2 &p) {
     if (state_ != ST_PRESSED) {

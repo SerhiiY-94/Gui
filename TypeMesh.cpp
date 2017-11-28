@@ -4,8 +4,10 @@
 #include "Renderer.h"
 
 ui::TypeMesh::TypeMesh(const std::string &text, BitmapFont *font, const math::vec2 &pos, const BaseElement *parent)
-        : BaseElement(pos, {0, 0}, parent),
-          text_(text), font_(font) {
+    : BaseElement(pos, {
+    0, 0
+}, parent),
+text_(text), font_(font) {
     Move(pos, parent);
 }
 
@@ -32,15 +34,15 @@ void ui::TypeMesh::Move(const math::vec2 &pos, const BaseElement *parent) {
     float w = font_->GetTriangles(text_.c_str(), pos_, uvs_, indices_, pos, parent);
     vec2 size = { w, font_->height(parent) };
 
-	
-	dims_[0] = parent->pos() + 0.5f * (pos + vec2(1, 1)) * parent->size();
-	dims_[1] = size; //0.5f * rel_dims_[1] * parent->size();
 
-	rel_dims_[0] = pos;
-	rel_dims_[1] = 2.0f * dims_[1] / parent->size();
+    dims_[0] = parent->pos() + 0.5f * (pos + vec2(1, 1)) * parent->size();
+    dims_[1] = size; //0.5f * rel_dims_[1] * parent->size();
 
-    dims_px_[0] = (ivec2) ((vec2)parent->pos_px() + 0.5f * (pos + vec2(1, 1)) * (vec2)parent->size_px());
-    dims_px_[1] = (ivec2) (size * (vec2) parent->size_px() * 0.5f);
+    rel_dims_[0] = pos;
+    rel_dims_[1] = 2.0f * dims_[1] / parent->size();
+
+    dims_px_[0] = (ivec2)((vec2)parent->pos_px() + 0.5f * (pos + vec2(1, 1)) * (vec2)parent->size_px());
+    dims_px_[1] = (ivec2)(size * (vec2)parent->size_px() * 0.5f);
 
     //dims_[0] = parent->pos() + 0.5f * (pos + vec2(1, 1)) * parent->size();
     //dims_[1] = size;

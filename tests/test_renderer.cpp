@@ -36,26 +36,28 @@ public:
 #include <ren/SW/SW.h>
 
 class RendererTest : public ren::Context {
-	SWcontext *ctx;
+    SWcontext *ctx;
 public:
-	RendererTest() {
-		ctx = swCreateContext(1, 1);
-		swMakeCurrent(ctx);
-		ren::Context::Init(256, 256);
-	}
+    RendererTest() {
+        ctx = swCreateContext(1, 1);
+        swMakeCurrent(ctx);
+        ren::Context::Init(256, 256);
+    }
 
-	~RendererTest() {
-		swDeleteContext(ctx);
-	}
+    ~RendererTest() {
+        swDeleteContext(ctx);
+    }
 };
 #endif
 
 void test_renderer() {
-    {   // Params test
+    {
+        // Params test
         JsObject config;
         config[ui::GL_DEFINES_KEY] = "";
 
-        {   // Default parameters
+        {
+            // Default parameters
             RendererTest _;
 
             ui::Renderer r(_, config);

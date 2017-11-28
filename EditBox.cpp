@@ -2,38 +2,43 @@
 
 #include "Renderer.h"
 
-namespace EditBoxConstants{
-    const unsigned long long default_flags =
-                    (1 << ui::Integers) |
-                    (1 << ui::Chars) |
-                    (1 << ui::Floats) |
-                    (1 << ui::Signed) |
-                    (1 << ui::Multiline);
+namespace EditBoxConstants {
+const unsigned long long default_flags =
+    (1 << ui::Integers) |
+    (1 << ui::Chars) |
+    (1 << ui::Floats) |
+    (1 << ui::Signed) |
+    (1 << ui::Multiline);
 
-	const int padding = 10;
-    const int cursor_offset = 12;
+const int padding = 10;
+const int cursor_offset = 12;
 }
 
 ui::EditBox::EditBox(ren::Context &ctx, const char *frame_tex_name, const math::vec2 &frame_offsets,
                      BitmapFont *font,
                      const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent)
-    : EditBox({ ctx, frame_tex_name, frame_offsets, { -1, -1 }, { 2, 2 }, this }, font, pos, size, parent) {}
+    : EditBox( {
+    ctx, frame_tex_name, frame_offsets, { -1, -1 }, { 2, 2 }, this
+}, font, pos, size, parent) {
+}
 
 ui::EditBox::EditBox(const Frame &frame, BitmapFont *font,
                      const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent)
     : BaseElement(pos, size, parent),
-      cursor_("|", font, {0, 0}, this),
-	  lay_({ -1 + 2.0f * EditBoxConstants::padding / parent->size_px().x, -1 }, { 2, 2 }, this),
-      frame_(frame), font_(font), edit_flags_(EditBoxConstants::default_flags), focused_(false),
-      current_line_(0), current_char_(0) {
-	lay_.set_vetical(true);
-	frame_.Resize(this);
+      cursor_("|", font, {
+    0, 0
+}, this),
+lay_({ -1 + 2.0f * EditBoxConstants::padding / parent->size_px().x, -1 }, { 2, 2 }, this),
+frame_(frame), font_(font), edit_flags_(EditBoxConstants::default_flags), focused_(false),
+current_line_(0), current_char_(0) {
+    lay_.set_vetical(true);
+    frame_.Resize(this);
 }
 
 void ui::EditBox::Resize(const BaseElement *parent) {
-	BaseElement::Resize(parent);
-	lay_.Resize({ -1 + 2.0f * EditBoxConstants::padding / parent->size_px().x, -1 }, { 2, 2 }, this);
-	frame_.Resize(this);
+    BaseElement::Resize(parent);
+    lay_.Resize({ -1 + 2.0f * EditBoxConstants::padding / parent->size_px().x, -1 }, { 2, 2 }, this);
+    frame_.Resize(this);
 
     UpdateCursor();
 }
@@ -67,8 +72,8 @@ void ui::EditBox::Press(const math::vec2 &p, bool push) {
 }
 
 void ui::EditBox::Draw(Renderer *r) {
-	auto &cur = r->GetParams();
-	r->EmplaceParams(cur.col(), cur.z_val(), cur.blend_mode(), dims_px_);
+    auto &cur = r->GetParams();
+    r->EmplaceParams(cur.col(), cur.z_val(), cur.blend_mode(), dims_px_);
 
     frame_.Draw(r);
     lay_.Draw(r);
@@ -79,13 +84,13 @@ void ui::EditBox::Draw(Renderer *r) {
     }
     r->PopParams();
 
-	r->PopParams();
+    r->PopParams();
 }
 
 int ui::EditBox::AddLine(const std::string &text) {
     if (!edit_flags_[Multiline] && !lines_.empty()) return -1;
 
-    lines_.emplace_back(text, font_, math::vec2{0, 0}, this);
+    lines_.emplace_back(text, font_, math::vec2{ 0, 0 }, this);
 
     // pointers could be invalidated after reallocation, so...
     UpdateLayout();
@@ -139,25 +144,25 @@ void ui::EditBox::AddChar(int c) {
     if (current_line_ >= (int)lines_.size()) return;
 
     switch (c) {
-        case 191:
-            c = '0' - 1;
-            break;
-        case 190:
-            if (!(edit_flags_[Chars] || edit_flags_[Floats])) return;
-            c = 46;
-            break;
-        case 188:
-            if (!edit_flags_[Chars]) return;
-            c = 44;
-            break;
-        default:
-            if (((c == ' ' || (c >= 'A' && c <= 'z') || (c >= 160 && c <= 255)) && (edit_flags_[Chars])) ||
+    case 191:
+        c = '0' - 1;
+        break;
+    case 190:
+        if (!(edit_flags_[Chars] || edit_flags_[Floats])) return;
+        c = 46;
+        break;
+    case 188:
+        if (!edit_flags_[Chars]) return;
+        c = 44;
+        break;
+    default:
+        if (((c == ' ' || (c >= 'A' && c <= 'z') || (c >= 160 && c <= 255)) && (edit_flags_[Chars])) ||
                 ((c == '.' || c == '-' || c == '=' || c == '+' || c == '/' || c == '{' || c == '}' || (c >= '0' && c <= '9')) &&
-                (edit_flags_[Integers] || edit_flags_[Floats]))) {
-            } else {
-                //LOGE("No %i", (int)s);
-                return;
-            }
+                 (edit_flags_[Integers] || edit_flags_[Floats]))) {
+        } else {
+            //LOGE("No %i", (int)s);
+            return;
+        }
     }
 
     std::string text = lines_[current_line_].text();
@@ -192,7 +197,7 @@ bool ui::EditBox::MoveCursorH(int m) {
     current_char_ += m;
 
     int len = (int)lines_[current_line_].text().length();
-    
+
     if (current_char_ < 0) {
         current_char_ = 0;
         return false;

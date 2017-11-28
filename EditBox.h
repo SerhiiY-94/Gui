@@ -7,57 +7,68 @@
 #include "TypeMesh.h"
 
 namespace ui {
-    enum eEditBoxFlags {
-        Integers,
-        Chars,
-        Floats,
-        Signed,
-        Multiline
-    };
-    
-    class EditBox : public BaseElement {
-        TypeMesh cursor_;
-        LinearLayout lay_;
-        Frame frame_;
-        std::vector<TypeMesh> lines_;
-        BitmapFont *font_;
-        std::bitset<32> edit_flags_;
-		bool focused_;
-        int current_line_, current_char_;
+enum eEditBoxFlags {
+    Integers,
+    Chars,
+    Floats,
+    Signed,
+    Multiline
+};
 
-        void UpdateLayout();
-        void UpdateCursor();
-    public:
-        EditBox(ren::Context &ctx, const char *frame_tex_name, const math::vec2 &frame_offsets,
-                BitmapFont *font,
-                const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent);
-        EditBox(const Frame &frame, BitmapFont *font,
-                const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent);
+class EditBox : public BaseElement {
+    TypeMesh cursor_;
+    LinearLayout lay_;
+    Frame frame_;
+    std::vector<TypeMesh> lines_;
+    BitmapFont *font_;
+    std::bitset<32> edit_flags_;
+    bool focused_;
+    int current_line_, current_char_;
 
-        Frame &frame() { return frame_; }
+    void UpdateLayout();
+    void UpdateCursor();
+public:
+    EditBox(ren::Context &ctx, const char *frame_tex_name, const math::vec2 &frame_offsets,
+            BitmapFont *font,
+            const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent);
+    EditBox(const Frame &frame, BitmapFont *font,
+            const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent);
 
-        const std::string &line_text(unsigned line) const { return lines_[line].text(); }
+    Frame &frame() {
+        return frame_;
+    }
 
-		bool focused() const { return focused_; }
+    const std::string &line_text(unsigned line) const {
+        return lines_[line].text();
+    }
 
-        void set_focused(bool b) { focused_ = b; UpdateCursor(); }
+    bool focused() const {
+        return focused_;
+    }
 
-        void set_flag(eEditBoxFlags flag, bool enabled) { edit_flags_.set(flag, enabled); }
+    void set_focused(bool b) {
+        focused_ = b;
+        UpdateCursor();
+    }
 
-		void Resize(const BaseElement *parent) override;
+    void set_flag(eEditBoxFlags flag, bool enabled) {
+        edit_flags_.set(flag, enabled);
+    }
 
-        void Press(const math::vec2 &p, bool push) override;
+    void Resize(const BaseElement *parent) override;
 
-        void Draw(Renderer *r) override;
+    void Press(const math::vec2 &p, bool push) override;
 
-        int AddLine(const std::string &text);
-        int InsertLine(const std::string &text);
-        void DeleteLine(unsigned line);
+    void Draw(Renderer *r) override;
 
-        void AddChar(int c);
-        void DeleteChar();
+    int AddLine(const std::string &text);
+    int InsertLine(const std::string &text);
+    void DeleteLine(unsigned line);
 
-        bool MoveCursorH(int m);
-        bool MoveCursorV(int m);
-    };
+    void AddChar(int c);
+    void DeleteChar();
+
+    bool MoveCursorH(int m);
+    bool MoveCursorV(int m);
+};
 }

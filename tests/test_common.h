@@ -29,7 +29,9 @@
 
 class Approx {
 public:
-    Approx(double val, double eps = 0.001) : val(val), eps(eps) { assert(eps > 0); }
+    Approx(double val, double eps = 0.001) : val(val), eps(eps) {
+        assert(eps > 0);
+    }
 
     double val, eps;
 };

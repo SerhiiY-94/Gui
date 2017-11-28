@@ -6,67 +6,70 @@
 #include <sys/Json.h>
 
 namespace UIRendererConstants {
-    enum { U_COL,
-           U_TEXTURE,
-           U_Z_OFFSET };
+enum {
+    U_COL,
+    U_TEXTURE,
+    U_Z_OFFSET
+};
 
-	const char vs_source[] = 
-		"/*\n"
-		"ATTRIBUTES\n"
-		"	aVertexPosition : 0\n"
-		"	aVertexUVs : 1\n"
-		"UNIFORMS\n"
-		"	z_offset : 2\n"
-		"*/\n"
-		"\n"
-		"uniform float z_offset;\n"
-		"\n"
-		"attribute vec3 aVertexPosition;\n"
-		"attribute vec2 aVertexUVs;\n"
-		"\n"
-		"varying vec2 aVertexUVs_;\n"
-		"\n"
-		"void main(void) {\n"
-		"    gl_Position = vec4(aVertexPosition + vec3(0.0, 0.0, z_offset), 1.0);\n"
-		"    aVertexUVs_ = aVertexUVs;\n"
-		"}";
+const char vs_source[] =
+    "/*\n"
+    "ATTRIBUTES\n"
+    "	aVertexPosition : 0\n"
+    "	aVertexUVs : 1\n"
+    "UNIFORMS\n"
+    "	z_offset : 2\n"
+    "*/\n"
+    "\n"
+    "uniform float z_offset;\n"
+    "\n"
+    "attribute vec3 aVertexPosition;\n"
+    "attribute vec2 aVertexUVs;\n"
+    "\n"
+    "varying vec2 aVertexUVs_;\n"
+    "\n"
+    "void main(void) {\n"
+    "    gl_Position = vec4(aVertexPosition + vec3(0.0, 0.0, z_offset), 1.0);\n"
+    "    aVertexUVs_ = aVertexUVs;\n"
+    "}";
 
-	const char fs_source[] =
-		"#ifdef GL_ES\n"
-		"	precision mediump float;\n"
-		"#else\n"
-		"	#define lowp\n"
-		"	#define mediump\n"
-		"	#define highp\n"
-		"#endif\n"
-		"\n"
-		"/*\n"
-		"UNIFORMS\n"
-		"	col : 0\n"
-		"	s_texture : 1\n"
-		"*/\n"
-		"\n"
-		"uniform vec3 col;\n"
-		"uniform sampler2D s_texture;\n"
-		"\n"
-		"varying vec2 aVertexUVs_;\n"
-		"\n"
-		"void main(void) {\n"
-		"	gl_FragColor = vec4(col, 1.0) * texture2D(s_texture, aVertexUVs_);\n"
-		"}";
+const char fs_source[] =
+    "#ifdef GL_ES\n"
+    "	precision mediump float;\n"
+    "#else\n"
+    "	#define lowp\n"
+    "	#define mediump\n"
+    "	#define highp\n"
+    "#endif\n"
+    "\n"
+    "/*\n"
+    "UNIFORMS\n"
+    "	col : 0\n"
+    "	s_texture : 1\n"
+    "*/\n"
+    "\n"
+    "uniform vec3 col;\n"
+    "uniform sampler2D s_texture;\n"
+    "\n"
+    "varying vec2 aVertexUVs_;\n"
+    "\n"
+    "void main(void) {\n"
+    "	gl_FragColor = vec4(col, 1.0) * texture2D(s_texture, aVertexUVs_);\n"
+    "}";
 
-    inline void BindTexture(int slot, uint32_t tex) {
-        glActiveTexture((GLenum)(GL_TEXTURE0 + slot));
-        glBindTexture(GL_TEXTURE_2D, (GLuint)tex);
-    }
+inline void BindTexture(int slot, uint32_t tex) {
+    glActiveTexture((GLenum)(GL_TEXTURE0 + slot));
+    glBindTexture(GL_TEXTURE_2D, (GLuint)tex);
+}
 }
 
 ui::Renderer::Renderer(ren::Context &ctx, const JsObject &config) : ctx_(ctx) {
-	using namespace UIRendererConstants;
+    using namespace UIRendererConstants;
 
-    const JsString &js_gl_defines = (const JsString &) config.at(GL_DEFINES_KEY);
+    const JsString &js_gl_defines = (const JsString &)config.at(GL_DEFINES_KEY);
 
-    {	// Load main shader
+    {
+        // Load main shader
         ren::eProgLoadStatus status;
         ui_program_ = ctx_.LoadProgramGLSL(UI_PROGRAM_NAME, vs_source, fs_source, &status);
         assert(status == ren::ProgCreatedFromData);
@@ -87,7 +90,7 @@ ui::Renderer::~Renderer() {
 }
 
 void ui::Renderer::BeginDraw() {
-	using namespace math;
+    using namespace math;
 
     int val = ui_program_->prog_id();
     glUseProgram(ui_program_->prog_id());
@@ -98,10 +101,10 @@ void ui::Renderer::BeginDraw() {
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_SCISSOR_TEST);
+    glEnable(GL_SCISSOR_TEST);
 
-	ivec2 scissor_test[2] = { { 0, 0 }, { ctx_.w(), ctx_.h() } };
-	this->EmplaceParams(vec3(1, 1, 1), 0.0f, BL_ALPHA, scissor_test);
+    ivec2 scissor_test[2] = { { 0, 0 }, { ctx_.w(), ctx_.h() } };
+    this->EmplaceParams(vec3(1, 1, 1), 0.0f, BL_ALPHA, scissor_test);
 
     glBindBuffer(GL_ARRAY_BUFFER, attribs_buf_id_);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_buf_id_);
@@ -110,9 +113,9 @@ void ui::Renderer::BeginDraw() {
 void ui::Renderer::EndDraw() {
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
-	glDisable(GL_SCISSOR_TEST);
+    glDisable(GL_SCISSOR_TEST);
 
-	this->PopParams();
+    this->PopParams();
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -120,21 +123,23 @@ void ui::Renderer::EndDraw() {
 
 void ui::Renderer::DrawImageQuad(const ren::Texture2DRef &tex, const math::vec2 dims[2], const math::vec2 uvs[2]) {
     using namespace UIRendererConstants;
-    
-    float vertices[] = {dims[0].x(), dims[0].y(), 0,
-                        uvs[0].x(), uvs[0].y(),
 
-                        dims[0].x(), dims[0].y() + dims[1].y(), 0,
-                        uvs[0].x(), uvs[1].y(),
+    float vertices[] = { dims[0].x, dims[0].y, 0,
+                         uvs[0].x, uvs[0].y,
 
-                        dims[0].x() + dims[1].x(), dims[0].y() + dims[1].y(), 0,
-                        uvs[1].x(), uvs[1].y(),
+                         dims[0].x, dims[0].y + dims[1].y, 0,
+                         uvs[0].x, uvs[1].y,
 
-                        dims[0].x() + dims[1].x(), dims[0].y(), 0,
-                        uvs[1].x(), uvs[0].y()};
+                         dims[0].x + dims[1].x, dims[0].y + dims[1].y, 0,
+                         uvs[1].x, uvs[1].y,
 
-    unsigned char indices[] = {2, 1, 0,
-                               3, 2, 0};
+                         dims[0].x + dims[1].x, dims[0].y, 0,
+                         uvs[1].x, uvs[0].y
+                       };
+
+    unsigned char indices[] = { 2, 1, 0,
+                                3, 2, 0
+                              };
 
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, sizeof(indices), indices);
@@ -190,8 +195,8 @@ void ui::Renderer::ApplyParams(ren::ProgramRef &p, const DrawParams &params) {
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
     }
 
-	if (params.scissor_test_[1].x() > 0 && params.scissor_test_[1].y() > 0) {
-		glScissor(params.scissor_test_[0].x(), params.scissor_test_[0].y(),
-				  params.scissor_test_[1].x(), params.scissor_test_[1].y());
-	}
+    if (params.scissor_test_[1].x > 0 && params.scissor_test_[1].y > 0) {
+        glScissor(params.scissor_test_[0].x, params.scissor_test_[0].y,
+                  params.scissor_test_[1].x, params.scissor_test_[1].y);
+    }
 }

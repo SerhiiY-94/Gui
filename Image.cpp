@@ -8,14 +8,16 @@
 
 ui::Image::Image(const ren::Texture2DRef &tex, const math::vec2 uvs[2],
                  const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent) :
-        BaseElement(pos, size, parent), tex_(tex) {
-    uvs_[0] = uvs[0]; uvs_[1] = uvs[1];
+    BaseElement(pos, size, parent), tex_(tex) {
+    uvs_[0] = uvs[0];
+    uvs_[1] = uvs[1];
 }
 
 ui::Image::Image(ren::Context &ctx, const char *tex_name, const math::vec2 uvs[2],
                  const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent) :
-        BaseElement(pos, size, parent) {
-    uvs_[0] = uvs[0]; uvs_[1] = uvs[1];
+    BaseElement(pos, size, parent) {
+    uvs_[0] = uvs[0];
+    uvs_[1] = uvs[1];
 
     ren::eTexLoadStatus status;
     tex_ = ctx.LoadTexture2D(tex_name, nullptr, 0, {}, &status);

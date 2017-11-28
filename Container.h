@@ -4,7 +4,7 @@
 #include "BaseElement.h"
 
 namespace ui {
-    class Container :
-}
+class Container :
+    }
 
 #endif // CONTAINER_H
