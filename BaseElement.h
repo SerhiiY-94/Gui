@@ -87,7 +87,7 @@ public:
 
 class RootElement : public BaseElement {
 public:
-    RootElement(const math::ivec2 &zone_size) : BaseElement( {
+    explicit RootElement(const math::ivec2 &zone_size) : BaseElement( {
         -1, -1
     }, { 2, 2 }, nullptr) {
         set_zone(zone_size);
