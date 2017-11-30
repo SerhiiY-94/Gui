@@ -162,8 +162,6 @@ float ui::BitmapFont::GetTriangles(const char *text, std::vector<float> &positio
     using namespace math;
 
     int len;
-    int row, col;
-    float u, v, u1, v1;
 
     len = (int)_strnlen(text, BFG_MAXSTRING);
 
@@ -192,13 +190,13 @@ float ui::BitmapFont::GetTriangles(const char *text, std::vector<float> &positio
             char_code += 256;
         }
 
-        row = (char_code - base_) / row_pitch_;
-        col = (char_code - base_) - row * row_pitch_;
+        int row = (char_code - base_) / row_pitch_;
+        int col = (char_code - base_) - row * row_pitch_;
 
-        u = col * col_factor_;
-        v = row * row_factor_;
-        u1 = u + col_factor_;
-        v1 = v + row_factor_;
+        float u = col * col_factor_;
+        float v = row * row_factor_;
+        float u1 = u + col_factor_;
+        float v1 = v + row_factor_;
 
         uvs[i * 8 + 0] = u;
         uvs[i * 8 + 1] = v1;
