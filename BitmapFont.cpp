@@ -247,7 +247,7 @@ void ui::BitmapFont::DrawText(Renderer *r, const char *text, const math::vec2 &p
         return;
     }
 
-    const auto &cur = r->GetParams();
+    const auto cur = r->GetParams();
 
     r->EmplaceParams(cur.col(), cur.z_val(), (eBlendMode)blend_mode(), cur.scissor_test());
     r->DrawUIElement(tex_, ui::PRIM_TRIANGLE, std_positions, std_uvs, std_indices);
