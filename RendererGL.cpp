@@ -92,7 +92,6 @@ ui::Renderer::~Renderer() {
 void ui::Renderer::BeginDraw() {
     using namespace math;
 
-    int val = ui_program_->prog_id();
     glUseProgram(ui_program_->prog_id());
 
     glEnableVertexAttribArray((GLuint)ui_program_->attribute(0).loc);
