@@ -2,22 +2,24 @@
 
 #include <vector>
 
-#include <math/vec2.hpp>
+#include <Ren/Context.h>
+#include <Ren/Texture.h>
 
-#include <ren/Context.h>
-#include <ren/Texture.h>
+#include <Ren/MVec.h>
 
-namespace ui {
+namespace Gui {
 class BaseElement;
 class Renderer;
 
+using Ren::Vec2f;
+
 class BitmapFont {
 public:
-    BitmapFont(const char *name = nullptr, ren::Context *ctx = nullptr);
+    BitmapFont(const char *name = nullptr, Ren::Context *ctx = nullptr);
 
     float height(const BaseElement *parent) const;
 
-    ren::Texture2DRef tex() {
+    Ren::Texture2DRef tex() {
         return tex_;
     }
 
@@ -29,24 +31,24 @@ public:
 
     void set_sharp(bool b);
 
-    bool Load(const char *name, ren::Context &ctx);
+    bool Load(const char *name, Ren::Context &ctx);
 
     void SetCursor(int x, int y);
 
     void ReverseYAxis(bool state);
 
     float GetTriangles(const char *text, std::vector<float> &positions, std::vector<float> &uvs,
-                       std::vector<unsigned char> &indices, const math::vec2 &pos, const BaseElement *parent);
+                       std::vector<unsigned char> &indices, const Vec2f &pos, const BaseElement *parent);
 
     float GetWidth(const char *text, const BaseElement *parent);
 
-    void DrawText(Renderer *r, const char *text, const math::vec2 &pos, const BaseElement *parent);
+    void DrawText(Renderer *r, const char *text, const Vec2f &pos, const BaseElement *parent);
 
 private:
     int cell_x_, cell_y_, y_offset_, row_pitch_;
     char base_;
     char width_[256];
-    ren::Texture2DRef tex_;
+    Ren::Texture2DRef tex_;
     int cur_x_, cur_y_;
     float row_factor_, col_factor_;
     int render_style_;

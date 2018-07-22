@@ -3,36 +3,34 @@
 #include "BitmapFont.h"
 #include "Renderer.h"
 
-ui::ButtonText::ButtonText(const std::string &text, BitmapFont *font, const math::vec2 &pos, const BaseElement *parent)
+Gui::ButtonText::ButtonText(const std::string &text, BitmapFont *font, const Vec2f &pos, const BaseElement *parent)
     : ButtonBase(pos, {
     0, 0
 }, parent),
 type_mesh_(text, font, pos, parent) {
 }
 
-bool ui::ButtonText::Check(const math::vec2 &p) const {
+bool Gui::ButtonText::Check(const Vec2f &p) const {
     return type_mesh_.Check(p);
 }
 
-bool ui::ButtonText::Check(const math::ivec2 &p) const {
+bool Gui::ButtonText::Check(const Vec2i &p) const {
     return type_mesh_.Check(p);
 }
 
-void ui::ButtonText::Move(const math::vec2 &pos, const BaseElement *parent) {
+void Gui::ButtonText::Move(const Vec2f &pos, const BaseElement *parent) {
     type_mesh_.Move(pos, parent);
 }
 
-void ui::ButtonText::Draw(Renderer *r) {
-    using namespace math;
-
+void Gui::ButtonText::Draw(Renderer *r) {
     const auto &cur = r->GetParams();
 
     if (state_ == ST_NORMAL) {
-        r->EmplaceParams(vec3(0.9f, 0.9f, 0.9f), cur.z_val(), cur.blend_mode(), cur.scissor_test());
+        r->EmplaceParams(Vec3f(0.9f, 0.9f, 0.9f), cur.z_val(), cur.blend_mode(), cur.scissor_test());
     } else if (state_ == ST_FOCUSED) {
-        r->EmplaceParams(vec3(1, 1, 1), cur.z_val(), cur.blend_mode(), cur.scissor_test());
+        r->EmplaceParams(Vec3f(1, 1, 1), cur.z_val(), cur.blend_mode(), cur.scissor_test());
     } else { // state_ == ST_PRESSED
-        r->EmplaceParams(vec3(0.5f, 0.5f, 0.5f), cur.z_val(), cur.blend_mode(), cur.scissor_test());
+        r->EmplaceParams(Vec3f(0.5f, 0.5f, 0.5f), cur.z_val(), cur.blend_mode(), cur.scissor_test());
     }
     type_mesh_.Draw(r);
 

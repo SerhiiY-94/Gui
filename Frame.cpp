@@ -7,61 +7,61 @@
 
 #include "Renderer.h"
 
-ui::Frame::Frame(const ren::Texture2DRef &tex, const math::vec2 &offsets,
-                 const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent)
+Gui::Frame::Frame(const Ren::Texture2DRef &tex, const Vec2f &offsets,
+                 const Vec2f &pos, const Vec2f &size, const BaseElement *parent)
     : BaseElement(pos, size, parent), tex_(tex), frame_offset_(offsets[0]), frame_offset_uv_(offsets[1]) {
 }
 
-ui::Frame::Frame(ren::Context &ctx, const char *tex_name, const math::vec2 &offsets,
-                 const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent)
+Gui::Frame::Frame(Ren::Context &ctx, const char *tex_name, const Vec2f &offsets,
+                 const Vec2f &pos, const Vec2f &size, const BaseElement *parent)
     : BaseElement(pos, size, parent), frame_offset_(offsets[0]), frame_offset_uv_(offsets[1]) {
 
-    ren::eTexLoadStatus status;
+    Ren::eTexLoadStatus status;
     tex_ = ctx.LoadTexture2D(tex_name, nullptr, 0, {}, &status);
-    if (status == ren::TexCreatedDefault) {
-        sys::AssetFile in_file(tex_name, sys::AssetFile::IN);
+    if (status == Ren::TexCreatedDefault) {
+        Sys::AssetFile in_file(tex_name, Sys::AssetFile::IN);
         size_t in_file_size = in_file.size();
         std::unique_ptr<char[]> data(new char[in_file_size]);
         in_file.Read(data.get(), in_file_size);
 
-        ren::Texture2DParams p;
-        p.filter = ren::Trilinear;
-        p.repeat = ren::Repeat;
+        Ren::Texture2DParams p;
+        p.filter = Ren::Trilinear;
+        p.repeat = Ren::Repeat;
         tex_ = ctx.LoadTexture2D(tex_name, data.get(), (int)in_file_size, p, &status);
-        assert(status == ren::TexCreatedFromData);
+        assert(status == Ren::TexCreatedFromData);
     }
     Resize(parent);
 }
 
-void ui::Frame::Resize(const ui::BaseElement *parent) {
+void Gui::Frame::Resize(const Gui::BaseElement *parent) {
     BaseElement::Resize(parent);
 
-    const math::vec2 off = 1.0f * math::vec2{ frame_offset_ } *dims_[1] / (math::vec2)dims_px_[1];
-    const math::vec2 min = dims_[0], max = dims_[0] + dims_[1];
+    const Vec2f off = 1.0f * Vec2f{ frame_offset_ } *dims_[1] / (Vec2f)dims_px_[1];
+    const Vec2f min = dims_[0], max = dims_[0] + dims_[1];
 
-    positions_ = { min.x, min.y, 0,
-                   min.x + off.x, min.y, 0,
-                   min.x + off.x, min.y + off.y, 0,
-                   min.x, min.y + off.y, 0,
+    positions_ = { min[0], min[1], 0,
+                   min[0] + off[0], min[1], 0,
+                   min[0] + off[0], min[1] + off[1], 0,
+                   min[0], min[1] + off[1], 0,
 
-                   min.x + off.x, max.y - off.y, 0,
-                   min.x, max.y - off.y, 0,
+                   min[0] + off[0], max[1] - off[1], 0,
+                   min[0], max[1] - off[1], 0,
 
-                   max.x - off.x, min.y + off.y, 0,
-                   max.x - off.x, max.y - off.y, 0,
+                   max[0] - off[0], min[1] + off[1], 0,
+                   max[0] - off[0], max[1] - off[1], 0,
 
-                   max.x - off.x, min.y, 0,
+                   max[0] - off[0], min[1], 0,
 
-                   max.x, min.y, 0,
-                   max.x, min.y + off.y, 0,
+                   max[0], min[1], 0,
+                   max[0], min[1] + off[1], 0,
 
-                   max.x, max.y - off.y, 0,
+                   max[0], max[1] - off[1], 0,
 
-                   max.x, max.y, 0,
-                   max.x - off.x, max.y, 0,
+                   max[0], max[1], 0,
+                   max[0] - off[0], max[1], 0,
 
-                   min.x + off.x, max.y, 0,
-                   min.x, max.y, 0,
+                   min[0] + off[0], max[1], 0,
+                   min[0], max[1], 0,
                  };
 
     uvs_ = { 0, 0,
@@ -118,6 +118,6 @@ void ui::Frame::Resize(const ui::BaseElement *parent) {
                };
 }
 
-void ui::Frame::Draw(ui::Renderer *r) {
+void Gui::Frame::Draw(Gui::Renderer *r) {
     r->DrawUIElement(tex_, PRIM_TRIANGLE, positions_, uvs_, indices_);
 }

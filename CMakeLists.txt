@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.4)
-project(ui)
+project(Gui)
 
 IF(WIN32)
 
@@ -54,10 +54,10 @@ list(APPEND ALL_SOURCE_FILES ${SOURCE_FILES})
 set_source_files_properties(${SOURCE_FILES} PROPERTIES HEADER_FILE_ONLY TRUE)
 source_group("src" FILES ${SOURCE_FILES})
 
-list(APPEND ALL_SOURCE_FILES _ui.cpp)
-source_group("src" FILES _ui.cpp)
+list(APPEND ALL_SOURCE_FILES _Gui.cpp)
+source_group("src" FILES _Gui.cpp)
 
-add_library(ui STATIC ${ALL_SOURCE_FILES})
-target_link_libraries(ui ren sys ${LIBS})
+add_library(Gui STATIC ${ALL_SOURCE_FILES})
+target_link_libraries(Gui Ren Sys ${LIBS})
 
 add_subdirectory(tests)

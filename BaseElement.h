@@ -2,10 +2,9 @@
 
 #include <bitset>
 
-#include <math/ivec2.hpp>
-#include <math/vec2.hpp>
+#include <Ren/MVec.h>
 
-namespace ui {
+namespace Gui {
 // forward declare everything
 class BitmapFont;
 class ButtonBase;
@@ -19,6 +18,9 @@ class LinearLayout;
 class Renderer;
 class TypeMesh;
 
+using Ren::Vec2f;
+using Ren::Vec2i;
+
 enum eFlags {
     Visible,
     Resizable
@@ -26,13 +28,13 @@ enum eFlags {
 
 class BaseElement {
 protected:
-    math::vec2           rel_dims_[2];
+    Vec2f           rel_dims_[2];
 
-    math::vec2           dims_[2];
-    math::ivec2          dims_px_[2];
+    Vec2f           dims_[2];
+    Vec2i           dims_px_[2];
     std::bitset<32>     flags_;
 public:
-    BaseElement(const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent);
+    BaseElement(const Vec2f &pos, const Vec2f &size, const BaseElement *parent);
     ~BaseElement() {}
 
     bool visible() const {
@@ -49,52 +51,52 @@ public:
         flags_[Resizable] = v;
     }
 
-    const math::vec2 &rel_pos() const {
+    const Vec2f &rel_pos() const {
         return rel_dims_[0];
     }
-    const math::vec2 &rel_size() const {
+    const Vec2f &rel_size() const {
         return rel_dims_[1];
     }
 
-    const math::vec2 &pos() const {
+    const Vec2f &pos() const {
         return dims_[0];
     }
-    const math::vec2 &size() const {
+    const Vec2f &size() const {
         return dims_[1];
     }
 
-    const math::ivec2 &pos_px() const {
+    const Vec2i &pos_px() const {
         return dims_px_[0];
     }
-    const math::ivec2 &size_px() const {
+    const Vec2i &size_px() const {
         return dims_px_[1];
     }
 
     virtual void Resize(const BaseElement *parent);
-    virtual void Resize(const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent);
+    virtual void Resize(const Vec2f &pos, const Vec2f &size, const BaseElement *parent);
 
-    virtual bool Check(const math::ivec2 &p) const;
-    virtual bool Check(const math::vec2 &p) const;
+    virtual bool Check(const Vec2i &p) const;
+    virtual bool Check(const Vec2f &p) const;
 
-    virtual void Focus(const math::ivec2 &p) {}
-    virtual void Focus(const math::vec2 &p) {}
+    virtual void Focus(const Vec2i &p) {}
+    virtual void Focus(const Vec2f &p) {}
 
-    virtual void Press(const math::ivec2 &p, bool push) {}
-    virtual void Press(const math::vec2 &p, bool push) {}
+    virtual void Press(const Vec2i &p, bool push) {}
+    virtual void Press(const Vec2f &p, bool push) {}
 
     virtual void Draw(Renderer *r) {}
 };
 
 class RootElement : public BaseElement {
 public:
-    explicit RootElement(const math::ivec2 &zone_size) : BaseElement( {
+    explicit RootElement(const Vec2i &zone_size) : BaseElement( {
         -1, -1
     }, { 2, 2 }, nullptr) {
         set_zone(zone_size);
-        Resize({ -1, -1 }, { 2, 2 }, nullptr);
+        Resize(Vec2f{ -1, -1 }, Vec2f{ 2, 2 }, nullptr);
     }
 
-    void set_zone(const math::ivec2 &zone_size) {
+    void set_zone(const Vec2i &zone_size) {
         dims_px_[1] = zone_size;
     }
 
@@ -102,7 +104,7 @@ public:
         Resize(dims_[0], dims_[1], parent);
     }
 
-    void Resize(const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent) override {
+    void Resize(const Vec2f &pos, const Vec2f &size, const BaseElement *parent) override {
         dims_[0] = pos;
         dims_[1] = size;
     }

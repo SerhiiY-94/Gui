@@ -4,18 +4,18 @@
 
 #include "BaseElement.h"
 
-namespace ui {
+namespace Gui {
 class Image : public BaseElement {
 protected:
-    ren::Texture2DRef tex_;
-    math::vec2       uvs_[2];
+    Ren::Texture2DRef tex_;
+    Vec2f             uvs_[2];
 public:
-    Image(const ren::Texture2DRef &tex, const math::vec2 uvs[2],
-          const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent);
-    Image(ren::Context &ctx, const char *tex_name, const math::vec2 uvs[2],
-          const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent);
+    Image(const Ren::Texture2DRef &tex, const Vec2f uvs[2],
+          const Vec2f &pos, const Vec2f &size, const BaseElement *parent);
+    Image(Ren::Context &ctx, const char *tex_name, const Vec2f uvs[2],
+          const Vec2f &pos, const Vec2f &size, const BaseElement *parent);
 
-    void set_uvs(const math::vec2 uvs[2]) {
+    void set_uvs(const Vec2f uvs[2]) {
         uvs_[0] = uvs[0];
         uvs_[1] = uvs[1];
     }

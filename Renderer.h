@@ -2,39 +2,43 @@
 
 #include <vector>
 
-#include <math/vec2.hpp>
+#include <Ren/Program.h>
+#include <Ren/Texture.h>
 
-#include <ren/Program.h>
-#include <ren/Texture.h>
+#include <Ren/MVec.h>
 
 struct JsObject;
 
-namespace ren {
+namespace Ren {
 class Context;
 }
 
-namespace ui {
+namespace Gui {
 const char GL_DEFINES_KEY[] = "gl_defines";
 const char UI_PROGRAM_NAME[] = "ui_program";
 
 enum ePrimitiveType { PRIM_TRIANGLE };
 enum eBlendMode { BL_ALPHA, BL_COLOR };
 
+using Ren::Vec2f;
+using Ren::Vec2i;
+using Ren::Vec3f;
+
 class Renderer {
 public:
-    Renderer(ren::Context &ctx, const JsObject &config);
+    Renderer(Ren::Context &ctx, const JsObject &config);
     ~Renderer();
 
     void BeginDraw();
     void EndDraw();
 
     struct DrawParams {
-        DrawParams(const math::vec3 &col, float z_val, eBlendMode blend_mode, const math::ivec2 scissor_test[2]) : col_(col), z_val_(z_val), blend_mode_(blend_mode) {
+        DrawParams(const Vec3f &col, float z_val, eBlendMode blend_mode, const Vec2i scissor_test[2]) : col_(col), z_val_(z_val), blend_mode_(blend_mode) {
             scissor_test_[0] = scissor_test[0];
             scissor_test_[1] = scissor_test[1];
         }
 
-        const math::vec3 &col() const {
+        const Vec3f &col() const {
             return col_;
         }
         float z_val() const {
@@ -43,10 +47,10 @@ public:
         eBlendMode blend_mode() const {
             return blend_mode_;
         }
-        const math::ivec2 *scissor_test() const {
+        const Vec2i *scissor_test() const {
             return scissor_test_;
         }
-        const math::ivec2 &scissor_test(int i) const {
+        const Vec2i &scissor_test(int i) const {
             return scissor_test_[i];
         }
 
@@ -62,10 +66,10 @@ public:
         }
     private:
         friend class Renderer;
-        math::vec3   col_;
+        Vec3f       col_;
         float		z_val_;
         eBlendMode  blend_mode_;
-        math::ivec2	scissor_test_[2];
+        Vec2i	    scissor_test_[2];
     };
 
     const DrawParams &GetParams() const {
@@ -85,22 +89,22 @@ public:
         params_.pop_back();
     }
 
-    void DrawImageQuad(const ren::Texture2DRef &tex,
-                       const math::vec2 dims[2],
-                       const math::vec2 uvs[2]);
+    void DrawImageQuad(const Ren::Texture2DRef &tex,
+                       const Vec2f dims[2],
+                       const Vec2f uvs[2]);
 
-    void DrawUIElement(const ren::Texture2DRef &tex, ePrimitiveType prim_type,
+    void DrawUIElement(const Ren::Texture2DRef &tex, ePrimitiveType prim_type,
                        const std::vector<float> &pos, const std::vector<float> &uvs,
                        const std::vector<unsigned char> &indices);
 private:
-    ren::Context &ctx_;
-    ren::ProgramRef ui_program_;
+    Ren::Context &ctx_;
+    Ren::ProgramRef ui_program_;
 #if defined(USE_GL_RENDER)
     uint32_t attribs_buf_id_, indices_buf_id_;
 #endif
     std::vector<DrawParams> params_;
 
-    void ApplyParams(ren::ProgramRef &p, const DrawParams &params);
+    void ApplyParams(Ren::ProgramRef &p, const DrawParams &params);
 };
 }
 

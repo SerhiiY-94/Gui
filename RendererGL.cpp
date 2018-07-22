@@ -63,16 +63,16 @@ inline void BindTexture(int slot, uint32_t tex) {
 }
 }
 
-ui::Renderer::Renderer(ren::Context &ctx, const JsObject &config) : ctx_(ctx) {
+Gui::Renderer::Renderer(Ren::Context &ctx, const JsObject &config) : ctx_(ctx) {
     using namespace UIRendererConstants;
 
     const JsString &js_gl_defines = (const JsString &)config.at(GL_DEFINES_KEY);
 
     {
         // Load main shader
-        ren::eProgLoadStatus status;
+        Ren::eProgLoadStatus status;
         ui_program_ = ctx_.LoadProgramGLSL(UI_PROGRAM_NAME, vs_source, fs_source, &status);
-        assert(status == ren::ProgCreatedFromData);
+        assert(status == Ren::ProgCreatedFromData);
     }
 
     glGenBuffers(1, &attribs_buf_id_);
@@ -84,14 +84,12 @@ ui::Renderer::Renderer(ren::Context &ctx, const JsObject &config) : ctx_(ctx) {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, 0xff * sizeof(GLubyte), nullptr, GL_DYNAMIC_DRAW);
 }
 
-ui::Renderer::~Renderer() {
+Gui::Renderer::~Renderer() {
     glDeleteBuffers(1, &attribs_buf_id_);
     glDeleteBuffers(1, &indices_buf_id_);
 }
 
-void ui::Renderer::BeginDraw() {
-    using namespace math;
-
+void Gui::Renderer::BeginDraw() {
     glUseProgram(ui_program_->prog_id());
 
     glEnableVertexAttribArray((GLuint)ui_program_->attribute(0).loc);
@@ -102,14 +100,14 @@ void ui::Renderer::BeginDraw() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_SCISSOR_TEST);
 
-    ivec2 scissor_test[2] = { { 0, 0 }, { ctx_.w(), ctx_.h() } };
-    this->EmplaceParams(vec3(1, 1, 1), 0.0f, BL_ALPHA, scissor_test);
+    Vec2i scissor_test[2] = { { 0, 0 }, { ctx_.w(), ctx_.h() } };
+    this->EmplaceParams(Vec3f(1, 1, 1), 0.0f, BL_ALPHA, scissor_test);
 
     glBindBuffer(GL_ARRAY_BUFFER, attribs_buf_id_);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_buf_id_);
 }
 
-void ui::Renderer::EndDraw() {
+void Gui::Renderer::EndDraw() {
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
     glDisable(GL_SCISSOR_TEST);
@@ -120,20 +118,20 @@ void ui::Renderer::EndDraw() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void ui::Renderer::DrawImageQuad(const ren::Texture2DRef &tex, const math::vec2 dims[2], const math::vec2 uvs[2]) {
+void Gui::Renderer::DrawImageQuad(const Ren::Texture2DRef &tex, const Vec2f dims[2], const Vec2f uvs[2]) {
     using namespace UIRendererConstants;
 
-    float vertices[] = { dims[0].x, dims[0].y, 0,
-                         uvs[0].x, uvs[0].y,
+    float vertices[] = { dims[0][0], dims[0][1], 0,
+                         uvs[0][0], uvs[0][1],
 
-                         dims[0].x, dims[0].y + dims[1].y, 0,
-                         uvs[0].x, uvs[1].y,
+                         dims[0][0], dims[0][1] + dims[1][1], 0,
+                         uvs[0][0], uvs[1][1],
 
-                         dims[0].x + dims[1].x, dims[0].y + dims[1].y, 0,
-                         uvs[1].x, uvs[1].y,
+                         dims[0][0] + dims[1][0], dims[0][1] + dims[1][1], 0,
+                         uvs[1][0], uvs[1][1],
 
-                         dims[0].x + dims[1].x, dims[0].y, 0,
-                         uvs[1].x, uvs[0].y
+                         dims[0][0] + dims[1][0], dims[0][1], 0,
+                         uvs[1][0], uvs[0][1]
                        };
 
     unsigned char indices[] = { 2, 1, 0,
@@ -155,7 +153,7 @@ void ui::Renderer::DrawImageQuad(const ren::Texture2DRef &tex, const math::vec2 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, 0);
 }
 
-void ui::Renderer::DrawUIElement(const ren::Texture2DRef &tex, ePrimitiveType prim_type,
+void Gui::Renderer::DrawUIElement(const Ren::Texture2DRef &tex, ePrimitiveType prim_type,
                                  const std::vector<float> &pos, const std::vector<float> &uvs,
                                  const std::vector<unsigned char> &indices) {
     using namespace UIRendererConstants;
@@ -182,7 +180,7 @@ void ui::Renderer::DrawUIElement(const ren::Texture2DRef &tex, ePrimitiveType pr
     }
 }
 
-void ui::Renderer::ApplyParams(ren::ProgramRef &p, const DrawParams &params) {
+void Gui::Renderer::ApplyParams(Ren::ProgramRef &p, const DrawParams &params) {
     using namespace UIRendererConstants;
     int val = p->uniform(U_COL).loc;
     glUniform3f(p->uniform(U_COL).loc, params.col_[0], params.col_[1], params.col_[2]);
@@ -194,8 +192,8 @@ void ui::Renderer::ApplyParams(ren::ProgramRef &p, const DrawParams &params) {
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
     }
 
-    if (params.scissor_test_[1].x > 0 && params.scissor_test_[1].y > 0) {
-        glScissor(params.scissor_test_[0].x, params.scissor_test_[0].y,
-                  params.scissor_test_[1].x, params.scissor_test_[1].y);
+    if (params.scissor_test_[1][0] > 0 && params.scissor_test_[1][1] > 0) {
+        glScissor(params.scissor_test_[0][0], params.scissor_test_[0][1],
+                  params.scissor_test_[1][0], params.scissor_test_[1][1]);
     }
 }

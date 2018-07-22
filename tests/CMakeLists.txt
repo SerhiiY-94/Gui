@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.2)
-project(test_ui)
+project(test_Gui)
 
 IF(WIN32)
     IF(SDL_STATIC)
@@ -20,8 +20,8 @@ ELSE(WIN32)
     ENDIF(APPLE)
 ENDIF(WIN32)
 
-add_executable(test_ui main.cpp
-                       test_common.h
-                       test_renderer.cpp
-                       test_widgets.cpp)
-target_link_libraries(test_ui ${LIBS} ui)
+add_executable(test_Gui main.cpp
+                        test_common.h
+                        test_renderer.cpp
+                        test_widgets.cpp)
+target_link_libraries(test_Gui ${LIBS} Gui)

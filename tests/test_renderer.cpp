@@ -10,7 +10,7 @@
 
 #include <SDL2/SDL.h>
 
-class RendererTest : public ren::Context {
+class RendererTest : public Ren::Context {
     SDL_Window *window_;
     void *gl_ctx_;
 public:
@@ -20,7 +20,7 @@ public:
         window_ = SDL_CreateWindow("View", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 256, 256, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN);
         gl_ctx_ = SDL_GL_CreateContext(window_);
 
-        ren::Context::Init(256, 256);
+        Ren::Context::Init(256, 256);
     }
 
     ~RendererTest() {
@@ -35,13 +35,13 @@ public:
 
 #include <ren/SW/SW.h>
 
-class RendererTest : public ren::Context {
+class RendererTest : public Ren::Context {
     SWcontext *ctx;
 public:
     RendererTest() {
         ctx = swCreateContext(1, 1);
         swMakeCurrent(ctx);
-        ren::Context::Init(256, 256);
+        Ren::Context::Init(256, 256);
     }
 
     ~RendererTest() {
@@ -54,13 +54,13 @@ void test_renderer() {
     {
         // Params test
         JsObject config;
-        config[ui::GL_DEFINES_KEY] = "";
+        config[Gui::GL_DEFINES_KEY] = "";
 
         {
             // Default parameters
             RendererTest _;
 
-            ui::Renderer r(_, config);
+            Gui::Renderer r(_, config);
 
             //const auto &cur = r.GetParams();
 

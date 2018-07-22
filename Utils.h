@@ -1,8 +1,8 @@
 #pragma once
 
-#include <math/vec2.hpp>
+#include <Ren/MVec.h>
 
-namespace ui {
-math::vec2 MapPointToScreen(const math::ivec2 &p, const math::ivec2 &res);
+namespace Gui {
+Ren::Vec2f MapPointToScreen(const Ren::Vec2i &p, const Ren::Vec2i &res);
 }
 

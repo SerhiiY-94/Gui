@@ -26,10 +26,10 @@ size_t _strnlen(const char *str, size_t maxlen) {
 }
 }
 
-std::vector<float> ui::BitmapFont::std_positions, ui::BitmapFont::std_uvs;
-std::vector<unsigned char> ui::BitmapFont::std_indices;
+std::vector<float> Gui::BitmapFont::std_positions, Gui::BitmapFont::std_uvs;
+std::vector<unsigned char> Gui::BitmapFont::std_indices;
 
-ui::BitmapFont::BitmapFont(const char *name, ren::Context *ctx) {
+Gui::BitmapFont::BitmapFont(const char *name, Ren::Context *ctx) {
     cur_x_ = cur_y_ = 0;
     r_ = g_ = b_ = 1.0f;
     invert_y_ = false;
@@ -40,13 +40,13 @@ ui::BitmapFont::BitmapFont(const char *name, ren::Context *ctx) {
     }
 }
 
-void ui::BitmapFont::set_sharp(bool b) {
+void Gui::BitmapFont::set_sharp(bool b) {
 #if !defined(USE_SW_RENDER)
-    tex_->ChangeFilter(b ? ren::NoFilter : ren::Bilinear, ren::ClampToEdge);
+    tex_->ChangeFilter(b ? Ren::NoFilter : Ren::Bilinear, Ren::ClampToEdge);
 #endif
 }
 
-bool ui::BitmapFont::Load(const char *fname, ren::Context &ctx) {
+bool Gui::BitmapFont::Load(const char *fname, Ren::Context &ctx) {
     using namespace BitmapFontConstants;
 
     std::vector<char> dat, img;
@@ -55,7 +55,7 @@ bool ui::BitmapFont::Load(const char *fname, ren::Context &ctx) {
     int img_x, img_y;
 
     try {
-        sys::AssetFile in(fname, sys::AssetFile::IN);
+        Sys::AssetFile in(fname, Sys::AssetFile::IN);
 
         file_size = in.size();
         dat.resize(file_size);
@@ -113,25 +113,25 @@ bool ui::BitmapFont::Load(const char *fname, ren::Context &ctx) {
     // Grab image data
     memcpy(&img[0], &dat[MAP_DATA_OFFSET], (size_t)(img_x * img_y) * (bpp / 8));
 
-    ren::Texture2DParams p;
+    Ren::Texture2DParams p;
     p.w = img_x;
     p.h = img_y;
-    p.filter = ren::NoFilter;
-    p.repeat = ren::ClampToEdge;
+    p.filter = Ren::NoFilter;
+    p.repeat = Ren::ClampToEdge;
     // Tex creation params are dependent on BPP
     switch (render_style_) {
     case BFG_RS_ALPHA:
 #if !defined(USE_SW_RENDER)
-        p.format = ren::RawLUM8;
+        p.format = Ren::RawLUM8;
 #else
         assert(false);
 #endif
         break;
     case BFG_RS_RGB:
-        p.format = ren::RawRGB888;
+        p.format = Ren::RawRGB888;
         break;
     case BFG_RS_RGBA:
-        p.format = ren::RawRGBA8888;
+        p.format = Ren::RawRGBA8888;
         break;
     default:
         return false;
@@ -142,12 +142,12 @@ bool ui::BitmapFont::Load(const char *fname, ren::Context &ctx) {
     return true;
 }
 
-void ui::BitmapFont::SetCursor(int x, int y) {
+void Gui::BitmapFont::SetCursor(int x, int y) {
     cur_x_ = x;
     cur_y_ = y;
 }
 
-void ui::BitmapFont::ReverseYAxis(bool state) {
+void Gui::BitmapFont::ReverseYAxis(bool state) {
     if (state) {
         y_offset_ = -cell_y_;
     } else {
@@ -156,10 +156,9 @@ void ui::BitmapFont::ReverseYAxis(bool state) {
     invert_y_ = state;
 }
 
-float ui::BitmapFont::GetTriangles(const char *text, std::vector<float> &positions, std::vector<float> &uvs,
-                                   std::vector<unsigned char> &indices, const math::vec2 &pos, const BaseElement *parent) {
+float Gui::BitmapFont::GetTriangles(const char *text, std::vector<float> &positions, std::vector<float> &uvs,
+                                   std::vector<unsigned char> &indices, const Vec2f &pos, const BaseElement *parent) {
     using namespace BitmapFontConstants;
-    using namespace math;
 
     int len;
 
@@ -179,8 +178,8 @@ float ui::BitmapFont::GetTriangles(const char *text, std::vector<float> &positio
     uvs.resize((size_t)len * 8);
     indices.resize((size_t)len * 6);
 
-    vec2 p = parent->pos() + 0.5f * (pos + vec2(1, 1)) * parent->size();
-    vec2 m = parent->size() / (vec2)parent->size_px();
+    Vec2f p = parent->pos() + 0.5f * (pos + Vec2f(1, 1)) * parent->size();
+    Vec2f m = parent->size() / (Vec2f)parent->size_px();
 
     cur_x_ = 0, cur_y_ = 0;
 
@@ -207,14 +206,14 @@ float ui::BitmapFont::GetTriangles(const char *text, std::vector<float> &positio
         uvs[i * 8 + 6] = u;
         uvs[i * 8 + 7] = v;
 
-        positions[i * 12 + 0] = p.x + cur_x_ * m.x;
-        positions[i * 12 + 1] = p.y + cur_y_ * m.y;
-        positions[i * 12 + 3] = p.x + (cur_x_ + cell_x_ * scale_) * m.x;
-        positions[i * 12 + 4] = p.y + cur_y_ * m.y;
-        positions[i * 12 + 6] = p.x + (cur_x_ + cell_x_ * scale_) * m.x;
-        positions[i * 12 + 7] = p.y + (cur_y_ + y_offset_ * scale_) * m.y;
-        positions[i * 12 + 9] = p.x + cur_x_ * m.x;
-        positions[i * 12 + 10] = p.y + (cur_y_ + y_offset_ * scale_) * m.y;
+        positions[i * 12 + 0] = p[0] + cur_x_ * m[0];
+        positions[i * 12 + 1] = p[1] + cur_y_ * m[1];
+        positions[i * 12 + 3] = p[0] + (cur_x_ + cell_x_ * scale_) * m[0];
+        positions[i * 12 + 4] = p[1] + cur_y_ * m[1];
+        positions[i * 12 + 6] = p[0] + (cur_x_ + cell_x_ * scale_) * m[0];
+        positions[i * 12 + 7] = p[1] + (cur_y_ + y_offset_ * scale_) * m[1];
+        positions[i * 12 + 9] = p[0] + cur_x_ * m[0];
+        positions[i * 12 + 10] = p[1] + (cur_y_ + y_offset_ * scale_) * m[1];
 
         indices[i * 6 + 0] = (unsigned char)(4 * i + 1);
         indices[i * 6 + 1] = (unsigned char)(4 * i + 2);
@@ -225,31 +224,31 @@ float ui::BitmapFont::GetTriangles(const char *text, std::vector<float> &positio
 
         cur_x_ += int(width_[char_code] * scale_);
     }
-    return cur_x_ * m.x;
+    return cur_x_ * m[0];
 
 }
 
-float ui::BitmapFont::GetWidth(const char *text, const BaseElement *parent) {
+float Gui::BitmapFont::GetWidth(const char *text, const BaseElement *parent) {
     return GetTriangles(text, std_positions, std_uvs, std_indices, { 0, 0 }, parent);
 }
 
-float ui::BitmapFont::height(const BaseElement *parent) const {
-    return y_offset_ * scale_ * parent->size().y / parent->size_px().y;
+float Gui::BitmapFont::height(const BaseElement *parent) const {
+    return y_offset_ * scale_ * parent->size()[1] / parent->size_px()[1];
 }
 
-int ui::BitmapFont::blend_mode() const {
-    return (render_style_ == BitmapFontConstants::BFG_RS_ALPHA) ? ui::BL_COLOR : ui::BL_ALPHA;
+int Gui::BitmapFont::blend_mode() const {
+    return (render_style_ == BitmapFontConstants::BFG_RS_ALPHA) ? Gui::BL_COLOR : Gui::BL_ALPHA;
 }
 
-void ui::BitmapFont::DrawText(Renderer *r, const char *text, const math::vec2 &pos, const BaseElement *parent) {
+void Gui::BitmapFont::DrawText(Renderer *r, const char *text, const Vec2f &pos, const BaseElement *parent) {
     GetTriangles(text, std_positions, std_uvs, std_indices, pos, parent);
     if (std_positions.empty()) {
         return;
     }
 
-    const auto cur = r->GetParams();
+    const auto &cur = r->GetParams();
 
     r->EmplaceParams(cur.col(), cur.z_val(), (eBlendMode)blend_mode(), cur.scissor_test());
-    r->DrawUIElement(tex_, ui::PRIM_TRIANGLE, std_positions, std_uvs, std_indices);
+    r->DrawUIElement(tex_, Gui::PRIM_TRIANGLE, std_positions, std_uvs, std_indices);
     r->PopParams();
 }

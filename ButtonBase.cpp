@@ -1,10 +1,10 @@
 #include "ButtonBase.h"
 
-ui::ButtonBase::ButtonBase(const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent)
+Gui::ButtonBase::ButtonBase(const Vec2f &pos, const Vec2f &size, const BaseElement *parent)
     : BaseElement(pos, size, parent), state_(ST_NORMAL) {
 }
 
-void ui::ButtonBase::Focus(const math::ivec2 &p) {
+void Gui::ButtonBase::Focus(const Vec2i &p) {
     if (state_ != ST_PRESSED) {
         if (Check(p)) {
             state_ = ST_FOCUSED;
@@ -14,7 +14,7 @@ void ui::ButtonBase::Focus(const math::ivec2 &p) {
     }
 }
 
-void ui::ButtonBase::Focus(const math::vec2 &p) {
+void Gui::ButtonBase::Focus(const Vec2f &p) {
     if (state_ != ST_PRESSED) {
         if (Check(p)) {
             state_ = ST_FOCUSED;
@@ -24,7 +24,7 @@ void ui::ButtonBase::Focus(const math::vec2 &p) {
     }
 }
 
-void ui::ButtonBase::Press(const math::ivec2 &p, bool push) {
+void Gui::ButtonBase::Press(const Vec2i &p, bool push) {
     if (state_ != ST_NORMAL) {
         if (Check(p)) {
             if (push) {
@@ -39,7 +39,7 @@ void ui::ButtonBase::Press(const math::ivec2 &p, bool push) {
     }
 }
 
-void ui::ButtonBase::Press(const math::vec2 &p, bool push) {
+void Gui::ButtonBase::Press(const Vec2f &p, bool push) {
     if (state_ != ST_NORMAL) {
         if (Check(p)) {
             if (push) {

@@ -53,23 +53,23 @@ extern "C" {
     }
 }
 
-ui::Renderer::Renderer(ren::Context &ctx, const JsObject &config) : ctx_(ctx) {
+Gui::Renderer::Renderer(Ren::Context &ctx, const JsObject &config) : ctx_(ctx) {
     using namespace UIRendererConstants;
 
-    ren::Attribute attrs[] = { { "pos", A_POS, SW_VEC3, 1 }, { "uvs", A_UV, SW_VEC2, 1 }, {} };
-    ren::Uniform unifs[] = { { "col", U_COL, SW_VEC3, 1 }, {} };
+    Ren::Attribute attrs[] = { { "pos", A_POS, SW_VEC3, 1 }, { "uvs", A_UV, SW_VEC2, 1 }, {} };
+    Ren::Uniform unifs[] = { { "col", U_COL, SW_VEC3, 1 }, {} };
     ui_program_ = ctx.LoadProgramSW(UI_PROGRAM_NAME, (void *)ui_program_vs, (void *)ui_program_fs, 2,
                                     attrs, unifs, nullptr);
 }
 
-ui::Renderer::~Renderer() {
+Gui::Renderer::~Renderer() {
 
 }
 
-void ui::Renderer::BeginDraw() {
+void Gui::Renderer::BeginDraw() {
     using namespace UIRendererConstants;
 
-    ren::Program *p = ui_program_.get();
+    Ren::Program *p = ui_program_.get();
 
     swUseProgram(p->prog_id());
     const math::vec3 white = { 1, 1, 1 };
@@ -87,7 +87,7 @@ void ui::Renderer::BeginDraw() {
     this->EmplaceParams(math::vec3(1, 1, 1), 0.0f, BL_ALPHA, scissor_test);
 }
 
-void ui::Renderer::EndDraw() {
+void Gui::Renderer::EndDraw() {
     swEnable(SW_FAST_PERSPECTIVE_CORRECTION);
     swEnable(SW_DEPTH_TEST);
     swDisable(SW_BLEND);
@@ -95,7 +95,7 @@ void ui::Renderer::EndDraw() {
     this->PopParams();
 }
 
-void ui::Renderer::DrawImageQuad(const ren::Texture2DRef &tex, const math::vec2 dims[2], const math::vec2 uvs[2]) {
+void Gui::Renderer::DrawImageQuad(const Ren::Texture2DRef &tex, const math::vec2 dims[2], const math::vec2 uvs[2]) {
     using namespace UIRendererConstants;
 
     const float vertices[] = { dims[0].x, dims[0].y, 0,
@@ -122,7 +122,7 @@ void ui::Renderer::DrawImageQuad(const ren::Texture2DRef &tex, const math::vec2 
     swDrawElements(SW_TRIANGLES, 6, SW_UNSIGNED_BYTE, indices);
 }
 
-void ui::Renderer::DrawUIElement(const ren::Texture2DRef &tex, ePrimitiveType prim_type,
+void Gui::Renderer::DrawUIElement(const Ren::Texture2DRef &tex, ePrimitiveType prim_type,
                                  const std::vector<float> &pos, const std::vector<float> &uvs,
                                  const std::vector<unsigned char> &indices) {
     using namespace UIRendererConstants;
@@ -144,7 +144,7 @@ void ui::Renderer::DrawUIElement(const ren::Texture2DRef &tex, ePrimitiveType pr
     }
 }
 
-void ui::Renderer::ApplyParams(ren::ProgramRef &p, const DrawParams &params) {
+void Gui::Renderer::ApplyParams(Ren::ProgramRef &p, const DrawParams &params) {
     using namespace UIRendererConstants;
 
     swSetUniform(U_COL, SW_VEC3, math::value_ptr(params.col()));

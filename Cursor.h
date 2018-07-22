@@ -2,24 +2,24 @@
 
 #include "Image.h"
 
-namespace ui {
+namespace Gui {
 class Cursor : public BaseElement {
 protected:
     Image		img_;
     bool		clicked_;
-    math::vec2	offset_;
+    Vec2f	    offset_;
 public:
-    Cursor(const ren::Texture2DRef &tex, const math::vec2 uvs[2], const math::vec2 &size, const BaseElement *parent);
-    Cursor(ren::Context &ctx, const char *tex_name, const math::vec2 uvs[2], const math::vec2 &size, const BaseElement *parent);
+    Cursor(const Ren::Texture2DRef &tex, const Vec2f uvs[2], const Vec2f &size, const BaseElement *parent);
+    Cursor(Ren::Context &ctx, const char *tex_name, const Vec2f uvs[2], const Vec2f &size, const BaseElement *parent);
 
     void set_clicked(bool b) {
         clicked_ = b;
     }
-    void set_offset(const math::vec2 &offset) {
+    void set_offset(const Vec2f &offset) {
         offset_ = offset;
     }
 
-    void SetPos(const math::vec2 &pos, const BaseElement *parent);
+    void SetPos(const Vec2f &pos, const BaseElement *parent);
 
     void Draw(Renderer *r) override;
 };

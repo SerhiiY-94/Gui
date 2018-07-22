@@ -6,7 +6,7 @@
 #include "LinearLayout.h"
 #include "TypeMesh.h"
 
-namespace ui {
+namespace Gui {
 enum eEditBoxFlags {
     Integers,
     Chars,
@@ -28,11 +28,11 @@ class EditBox : public BaseElement {
     void UpdateLayout();
     void UpdateCursor();
 public:
-    EditBox(ren::Context &ctx, const char *frame_tex_name, const math::vec2 &frame_offsets,
+    EditBox(Ren::Context &ctx, const char *frame_tex_name, const Vec2f &frame_offsets,
             BitmapFont *font,
-            const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent);
+            const Vec2f &pos, const Vec2f &size, const BaseElement *parent);
     EditBox(const Frame &frame, BitmapFont *font,
-            const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent);
+            const Vec2f &pos, const Vec2f &size, const BaseElement *parent);
 
     Frame &frame() {
         return frame_;
@@ -57,7 +57,7 @@ public:
 
     void Resize(const BaseElement *parent) override;
 
-    void Press(const math::vec2 &p, bool push) override;
+    void Press(const Vec2f &p, bool push) override;
 
     void Draw(Renderer *r) override;
 

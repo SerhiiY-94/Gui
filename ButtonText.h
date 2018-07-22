@@ -5,17 +5,17 @@
 #include "ButtonBase.h"
 #include "TypeMesh.h"
 
-namespace ui {
+namespace Gui {
 class ButtonText : public ButtonBase {
 protected:
     TypeMesh type_mesh_;
 public:
-    ButtonText(const std::string &text, BitmapFont *font, const math::vec2 &pos, const BaseElement *parent);
+    ButtonText(const std::string &text, BitmapFont *font, const Vec2f &pos, const BaseElement *parent);
 
-    bool Check(const math::vec2 &p) const override;
-    bool Check(const math::ivec2 &p) const override;
+    bool Check(const Vec2f &p) const override;
+    bool Check(const Vec2i &p) const override;
 
-    void Move(const math::vec2 &pos, const BaseElement *parent);
+    void Move(const Vec2f &pos, const BaseElement *parent);
 
     void Draw(Renderer *r) override;
 };

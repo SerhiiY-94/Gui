@@ -6,20 +6,20 @@
 
 #include "BaseElement.h"
 
-namespace ui {
+namespace Gui {
 class Frame : public BaseElement {
-    ren::Texture2DRef tex_;
+    Ren::Texture2DRef tex_;
     float frame_offset_, frame_offset_uv_;
 
     std::vector<float> positions_, uvs_;
     std::vector<unsigned char> indices_;
 public:
-    Frame(const ren::Texture2DRef &tex, const math::vec2 &offsets,
-          const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent);
-    Frame(ren::Context &ctx, const char *tex_name, const math::vec2 &offsets,
-          const math::vec2 &pos, const math::vec2 &size, const BaseElement *parent);
+    Frame(const Ren::Texture2DRef &tex, const Vec2f &offsets,
+          const Vec2f &pos, const Vec2f &size, const BaseElement *parent);
+    Frame(Ren::Context &ctx, const char *tex_name, const Vec2f &offsets,
+          const Vec2f &pos, const Vec2f &size, const BaseElement *parent);
 
-    ren::Texture2DRef &tex() {
+    Ren::Texture2DRef &tex() {
         return tex_;
     }
 

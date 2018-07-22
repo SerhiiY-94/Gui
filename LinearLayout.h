@@ -4,13 +4,13 @@
 
 #include "BaseElement.h"
 
-namespace ui {
+namespace Gui {
 class LinearLayout : public BaseElement {
 protected:
     std::vector<BaseElement *>  elements_;
     bool                        vertical_;
 public:
-    LinearLayout(const math::vec2 &start, const math::vec2 &size, const BaseElement *parent) :
+    LinearLayout(const Vec2f &start, const Vec2f &size, const BaseElement *parent) :
         BaseElement(start, size, parent), vertical_(false) {
     }
 
@@ -48,16 +48,16 @@ public:
     }
 
     void Resize(const BaseElement *parent) override;
-    void Resize(const math::vec2 &start, const math::vec2 &size, const BaseElement *parent) override;
+    void Resize(const Vec2f &start, const Vec2f &size, const BaseElement *parent) override;
 
-    bool Check(const math::ivec2 &p) const override;
-    bool Check(const math::vec2 &p) const override;
+    bool Check(const Vec2i &p) const override;
+    bool Check(const Vec2f &p) const override;
 
-    void Focus(const math::ivec2 &p) override;
-    void Focus(const math::vec2 &p) override;
+    void Focus(const Vec2i &p) override;
+    void Focus(const Vec2f &p) override;
 
-    void Press(const math::ivec2 &p, bool push) override;
-    void Press(const math::vec2 &p, bool push) override;
+    void Press(const Vec2i &p, bool push) override;
+    void Press(const Vec2f &p, bool push) override;
 
     void Draw(Renderer *r) override;
 };
