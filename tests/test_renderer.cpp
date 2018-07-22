@@ -1,8 +1,8 @@
 #include "test_common.h"
 
-#include <ren/Context.h>
-#include <ren/GL.h>
-#include <sys/Json.h>
+#include <Ren/Context.h>
+#include <Ren/GL.h>
+#include <Sys/Json.h>
 
 #include "../Renderer.h"
 
@@ -33,7 +33,7 @@ public:
 };
 #else
 
-#include <ren/SW/SW.h>
+#include <Ren/SW/SW.h>
 
 class RendererTest : public Ren::Context {
     SWcontext *ctx;

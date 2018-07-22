@@ -1,8 +1,8 @@
 #include "Renderer.h"
 
-#include <sys/Json.h>
-#include <ren/Context.h>
-#include <ren/SW/SW.h>
+#include <Ren/Context.h>
+#include <Ren/SW/SW.h>
+#include <Sys/Json.h>
 
 namespace UIRendererConstants {
 enum {

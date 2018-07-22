@@ -2,8 +2,8 @@
 
 #include <cassert>
 
-#include <ren/GL.h>
-#include <sys/Json.h>
+#include <Ren/GL.h>
+#include <Sys/Json.h>
 
 namespace UIRendererConstants {
 enum {
