@@ -20,7 +20,7 @@ void Gui::BaseElement::Resize(const BaseElement *parent) {
     dims_[0] = parent->pos() + 0.5f * (rel_dims_[0] + Vec2f(1, 1)) * parent->size();
     dims_[1] = 0.5f * rel_dims_[1] * parent->size();
 
-    dims_px_[0] = (Vec2i)(Vec2f{ parent->pos_px() } + 0.5f * (rel_dims_[0] + Vec2f(1, 1)) * Vec2f { parent->size_px() });
+    dims_px_[0] = (Vec2i)(Vec2f{ parent->pos_px() } +0.5f * (rel_dims_[0] + Vec2f(1, 1)) * Vec2f { parent->size_px() });
     dims_px_[1] = (Vec2i)(rel_dims_[1] * (Vec2f)parent->size_px() * 0.5f);
 }
 
