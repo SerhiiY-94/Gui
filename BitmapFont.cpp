@@ -50,7 +50,7 @@ bool Gui::BitmapFont::Load(const char *fname, Ren::Context &ctx) {
     using namespace BitmapFontConstants;
 
     std::vector<char> dat, img;
-    unsigned long file_size;
+    size_t file_size;
     char bpp;
     int img_x, img_y;
 

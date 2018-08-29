@@ -50,7 +50,7 @@ void Gui::EditBox::Press(const Vec2f &p, bool push) {
         focused_ = true;
         for (auto it = lines_.begin(); it != lines_.end(); ++it) {
             if (it->Check(p)) {
-                current_line_ = std::distance(lines_.begin(), it);
+                current_line_ = (int)std::distance(lines_.begin(), it);
                 const auto &pos = it->positions();
                 for (unsigned i = 0; i < pos.size(); i += 4 * 3) {
                     if ((i == 0 && p[0] > pos[i]) || (i > 0 && p[0] > 0.5f * (pos[i] + pos[i - 3]))) {
@@ -60,8 +60,8 @@ void Gui::EditBox::Press(const Vec2f &p, bool push) {
                 UpdateCursor();
                 break;
             } else if (p[1] >= it->pos()[1] && p[1] <= it->pos()[1] + it->size()[1]) {
-                current_line_ = std::distance(lines_.begin(), it);
-                current_char_ = lines_[current_line_].text().length();
+                current_line_ = (int)std::distance(lines_.begin(), it);
+                current_char_ = (int)lines_[current_line_].text().length();
                 UpdateCursor();
                 break;
             }
@@ -222,7 +222,7 @@ bool Gui::EditBox::MoveCursorV(int m) {
         current_line_ = 0;
         res = false;
     } else if (current_line_ >= (int)lines_.size()) {
-        current_line_ = lines_.size() - 1;
+        current_line_ = (int)lines_.size() - 1;
         res = false;
     }
 
