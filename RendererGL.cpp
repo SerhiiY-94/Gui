@@ -99,6 +99,7 @@ void Gui::Renderer::BeginDraw() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_SCISSOR_TEST);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     Vec2i scissor_test[2] = { { 0, 0 }, { ctx_.w(), ctx_.h() } };
     this->EmplaceParams(Vec3f(1, 1, 1), 0.0f, BL_ALPHA, scissor_test);
