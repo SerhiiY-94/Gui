@@ -115,6 +115,9 @@ void Gui::Renderer::EndDraw() {
     glDisable(GL_BLEND);
     glDisable(GL_SCISSOR_TEST);
 
+    glDisableVertexAttribArray((GLuint)ui_program_->attribute(0).loc);
+    glDisableVertexAttribArray((GLuint)ui_program_->attribute(1).loc);
+
     this->PopParams();
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
