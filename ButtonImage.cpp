@@ -1,10 +1,10 @@
 #include "ButtonImage.h"
 
 Gui::ButtonImage::ButtonImage(Ren::Context &ctx,
-                             const char *tex_normal, const Vec2f uvs_normal[2],
-                             const char *tex_focused, const Vec2f uvs_focused[2],
-                             const char *tex_pressed, const Vec2f uvs_pressed[2],
-                             const Vec2f &pos, const Vec2f &size, const BaseElement *parent)
+                              const char *tex_normal, const Vec2f uvs_normal[2],
+                              const char *tex_focused, const Vec2f uvs_focused[2],
+                              const char *tex_pressed, const Vec2f uvs_pressed[2],
+                              const Vec2f &pos, const Vec2f &size, const BaseElement *parent)
     : ButtonBase(pos, size, parent),
       image_normal_{ ctx, tex_normal, uvs_normal, Vec2f{-1, -1}, Vec2f{2, 2}, this },
       image_focused_{ ctx, tex_focused, uvs_focused, Vec2f{-1, -1}, Vec2f{2, 2}, this },

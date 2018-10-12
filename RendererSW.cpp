@@ -124,8 +124,8 @@ void Gui::Renderer::DrawImageQuad(const Ren::Texture2DRef &tex, const Ren::Vec2f
 }
 
 void Gui::Renderer::DrawUIElement(const Ren::Texture2DRef &tex, ePrimitiveType prim_type,
-                                 const std::vector<float> &pos, const std::vector<float> &uvs,
-                                 const std::vector<unsigned char> &indices) {
+                                  const std::vector<float> &pos, const std::vector<float> &uvs,
+                                  const std::vector<unsigned char> &indices) {
     using namespace UIRendererConstants;
 
     if (pos.empty()) return;

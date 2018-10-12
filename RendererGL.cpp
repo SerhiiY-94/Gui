@@ -160,8 +160,8 @@ void Gui::Renderer::DrawImageQuad(const Ren::Texture2DRef &tex, const Vec2f dims
 }
 
 void Gui::Renderer::DrawUIElement(const Ren::Texture2DRef &tex, ePrimitiveType prim_type,
-                                 const std::vector<float> &pos, const std::vector<float> &uvs,
-                                 const std::vector<unsigned char> &indices) {
+                                  const std::vector<float> &pos, const std::vector<float> &uvs,
+                                  const std::vector<unsigned char> &indices) {
     using namespace UIRendererConstants;
 
     assert(pos.size() / 5 < 0xff);

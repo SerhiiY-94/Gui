@@ -7,14 +7,14 @@
 #include "Renderer.h"
 
 Gui::Image::Image(const Ren::Texture2DRef &tex, const Vec2f uvs[2],
-                 const Vec2f &pos, const Vec2f &size, const BaseElement *parent) :
+                  const Vec2f &pos, const Vec2f &size, const BaseElement *parent) :
     BaseElement(pos, size, parent), tex_(tex) {
     uvs_[0] = uvs[0];
     uvs_[1] = uvs[1];
 }
 
 Gui::Image::Image(Ren::Context &ctx, const char *tex_name, const Vec2f uvs[2],
-                 const Vec2f &pos, const Vec2f &size, const BaseElement *parent) :
+                  const Vec2f &pos, const Vec2f &size, const BaseElement *parent) :
     BaseElement(pos, size, parent) {
     uvs_[0] = uvs[0];
     uvs_[1] = uvs[1];

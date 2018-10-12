@@ -8,12 +8,12 @@
 #include "Renderer.h"
 
 Gui::Frame::Frame(const Ren::Texture2DRef &tex, const Vec2f &offsets,
-                 const Vec2f &pos, const Vec2f &size, const BaseElement *parent)
+                  const Vec2f &pos, const Vec2f &size, const BaseElement *parent)
     : BaseElement(pos, size, parent), tex_(tex), frame_offset_(offsets[0]), frame_offset_uv_(offsets[1]) {
 }
 
 Gui::Frame::Frame(Ren::Context &ctx, const char *tex_name, const Vec2f &offsets,
-                 const Vec2f &pos, const Vec2f &size, const BaseElement *parent)
+                  const Vec2f &pos, const Vec2f &size, const BaseElement *parent)
     : BaseElement(pos, size, parent), frame_offset_(offsets[0]), frame_offset_uv_(offsets[1]) {
 
     Ren::eTexLoadStatus status;

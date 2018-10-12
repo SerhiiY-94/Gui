@@ -157,7 +157,7 @@ void Gui::BitmapFont::ReverseYAxis(bool state) {
 }
 
 float Gui::BitmapFont::GetTriangles(const char *text, std::vector<float> &positions, std::vector<float> &uvs,
-                                   std::vector<unsigned char> &indices, const Vec2f &pos, const BaseElement *parent) {
+                                    std::vector<unsigned char> &indices, const Vec2f &pos, const BaseElement *parent) {
     using namespace BitmapFontConstants;
 
     int len;
