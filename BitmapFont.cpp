@@ -41,9 +41,7 @@ Gui::BitmapFont::BitmapFont(const char *name, Ren::Context *ctx) {
 }
 
 void Gui::BitmapFont::set_sharp(bool b) {
-#if !defined(USE_SW_RENDER)
     tex_->ChangeFilter(b ? Ren::NoFilter : Ren::Bilinear, Ren::ClampToEdge);
-#endif
 }
 
 bool Gui::BitmapFont::Load(const char *fname, Ren::Context &ctx) {

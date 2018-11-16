@@ -1,5 +1,8 @@
 #include "Renderer.h"
 
+#pragma warning(push)
+#pragma warning(disable : 4505)
+
 #include <Ren/Context.h>
 #include <Ren/SW/SW.h>
 #include <Sys/Json.h>
@@ -36,6 +39,8 @@ extern "C" {
         V_POS_OUT[1] = pos[1];
         V_POS_OUT[2] = pos[2];
         V_POS_OUT[3] = 1;
+
+        ((void)uniforms);
     }
 
     FSHADER ui_program_fs(FS_IN, FS_OUT) {
@@ -51,10 +56,12 @@ extern "C" {
         F_COL_OUT[1] = col[1];
         F_COL_OUT[2] = col[2];
         F_COL_OUT[3] = col[3];
+
+        ((void)b_discard);
     }
 }
 
-Gui::Renderer::Renderer(Ren::Context &ctx, const JsObject &config) : ctx_(ctx) {
+Gui::Renderer::Renderer(Ren::Context &ctx, const JsObject &/*config*/) : ctx_(ctx) {
     using namespace UIRendererConstants;
 
     Ren::Attribute attrs[] = { { "pos", A_POS, SW_VEC3, 1 }, { "uvs", A_UV, SW_VEC2, 1 }, {} };
@@ -145,9 +152,10 @@ void Gui::Renderer::DrawUIElement(const Ren::Texture2DRef &tex, ePrimitiveType p
     }
 }
 
-void Gui::Renderer::ApplyParams(Ren::ProgramRef &p, const DrawParams &params) {
+void Gui::Renderer::ApplyParams(Ren::ProgramRef &, const DrawParams &params) {
     using namespace UIRendererConstants;
 
     swSetUniform(U_COL, SW_VEC3, Ren::ValuePtr(params.col()));
 }
 
+#pragma warning(pop)

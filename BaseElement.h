@@ -78,13 +78,13 @@ public:
     virtual bool Check(const Vec2i &p) const;
     virtual bool Check(const Vec2f &p) const;
 
-    virtual void Focus(const Vec2i &p) {}
-    virtual void Focus(const Vec2f &p) {}
+    virtual void Focus(const Vec2i &/*p*/) {}
+    virtual void Focus(const Vec2f &/*p*/) {}
 
-    virtual void Press(const Vec2i &p, bool push) {}
-    virtual void Press(const Vec2f &p, bool push) {}
+    virtual void Press(const Vec2i &/*p*/, bool /*push*/) {}
+    virtual void Press(const Vec2f &/*p*/, bool /*push*/) {}
 
-    virtual void Draw(Renderer *r) {}
+    virtual void Draw(Renderer * /*r*/) {}
 };
 
 class RootElement : public BaseElement {
@@ -104,7 +104,7 @@ public:
         Resize(dims_[0], dims_[1], parent);
     }
 
-    void Resize(const Vec2f &pos, const Vec2f &size, const BaseElement *parent) override {
+    void Resize(const Vec2f &pos, const Vec2f &size, const BaseElement * /*parent*/) override {
         dims_[0] = pos;
         dims_[1] = size;
     }

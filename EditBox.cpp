@@ -166,7 +166,7 @@ void Gui::EditBox::AddChar(int c) {
     }
 
     std::string text = lines_[current_line_].text();
-    text.insert(text.begin() + current_char_, c);
+    text.insert(text.begin() + current_char_, (char)c);
 
     lines_[current_line_] = TypeMesh(text, font_, { 0.0f, 0.0f }, this);
     current_char_++;
