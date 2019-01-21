@@ -100,6 +100,7 @@ private:
     Ren::Context &ctx_;
     Ren::ProgramRef ui_program_;
 #if defined(USE_GL_RENDER)
+    uint32_t main_vao_;
     uint32_t attribs_buf_id_, indices_buf_id_;
 #endif
     std::vector<DrawParams> params_;

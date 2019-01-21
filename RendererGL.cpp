@@ -75,6 +75,9 @@ Gui::Renderer::Renderer(Ren::Context &ctx, const JsObject &config) : ctx_(ctx) {
         assert(status == Ren::ProgCreatedFromData);
     }
 
+    glGenVertexArrays(1, &main_vao_);
+    glBindVertexArray(main_vao_);
+
     glGenBuffers(1, &attribs_buf_id_);
     glBindBuffer(GL_ARRAY_BUFFER, attribs_buf_id_);
     glBufferData(GL_ARRAY_BUFFER, 0xff * 5 * sizeof(GLfloat), nullptr, GL_DYNAMIC_DRAW);
@@ -82,18 +85,19 @@ Gui::Renderer::Renderer(Ren::Context &ctx, const JsObject &config) : ctx_(ctx) {
     glGenBuffers(1, &indices_buf_id_);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_buf_id_);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, 0xff * sizeof(GLubyte), nullptr, GL_DYNAMIC_DRAW);
+
+    glEnableVertexAttribArray((GLuint)ui_program_->attribute(0).loc);
+    glEnableVertexAttribArray((GLuint)ui_program_->attribute(1).loc);
 }
 
 Gui::Renderer::~Renderer() {
+    glDeleteVertexArrays(1, &main_vao_);
     glDeleteBuffers(1, &attribs_buf_id_);
     glDeleteBuffers(1, &indices_buf_id_);
 }
 
 void Gui::Renderer::BeginDraw() {
     glUseProgram(ui_program_->prog_id());
-
-    glEnableVertexAttribArray((GLuint)ui_program_->attribute(0).loc);
-    glEnableVertexAttribArray((GLuint)ui_program_->attribute(1).loc);
 
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
@@ -106,6 +110,7 @@ void Gui::Renderer::BeginDraw() {
     Vec2i scissor_test[2] = { { 0, 0 }, { ctx_.w(), ctx_.h() } };
     this->EmplaceParams(Vec3f(1, 1, 1), 0.0f, BL_ALPHA, scissor_test);
 
+    glBindVertexArray(main_vao_);
     glBindBuffer(GL_ARRAY_BUFFER, attribs_buf_id_);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_buf_id_);
 }
@@ -115,11 +120,9 @@ void Gui::Renderer::EndDraw() {
     glDisable(GL_BLEND);
     glDisable(GL_SCISSOR_TEST);
 
-    glDisableVertexAttribArray((GLuint)ui_program_->attribute(0).loc);
-    glDisableVertexAttribArray((GLuint)ui_program_->attribute(1).loc);
-
     this->PopParams();
 
+    glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
