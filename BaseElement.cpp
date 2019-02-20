@@ -9,7 +9,7 @@ const unsigned default_flags = (1 << Visible) | (1 << Resizable);
 Gui::BaseElement::BaseElement(const Vec2f &pos, const Vec2f &size, const BaseElement *parent)
     : flags_(BaseElementConstants::default_flags) {
     if (parent) {
-        Resize(pos, size, parent);
+        BaseElement::Resize(pos, size, parent);
     } else {
         rel_dims_[0] = pos;
         rel_dims_[1] = size;

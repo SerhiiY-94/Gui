@@ -54,7 +54,7 @@ void test_renderer() {
     {
         // Params test
         JsObject config;
-        config[Gui::GL_DEFINES_KEY] = "";
+        config[Gui::GL_DEFINES_KEY] = JsString{ "" };
 
         {
             // Default parameters

@@ -191,7 +191,7 @@ void Gui::Renderer::DrawUIElement(const Ren::Texture2DRef &tex, ePrimitiveType p
 
 void Gui::Renderer::ApplyParams(Ren::ProgramRef &p, const DrawParams &params) {
     using namespace UIRendererConstants;
-    int val = p->uniform(U_COL).loc;
+    //int val = p->uniform(U_COL).loc;
     glUniform3f(p->uniform(U_COL).loc, params.col_[0], params.col_[1], params.col_[2]);
     glUniform1f(p->uniform(U_Z_OFFSET).loc, params.z_val_);
 
